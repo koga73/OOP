@@ -44,9 +44,7 @@
 	foo.func1();
 	foo.func2();
 ```
-
-
-
+----------
 ```JavaScript
 	OOP.Namespace("Lib.Package.Bar", function(params){
 		var _vars = {

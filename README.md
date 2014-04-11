@@ -44,7 +44,8 @@
 	foo.func1();
 	foo.func2();
 ```
-A basic class
+
+
 
 ```JavaScript
 	OOP.Namespace("Lib.Package.Bar", function(params){
@@ -89,4 +90,3 @@ A basic class
 	console.log(bar._isType(Lib.Package.Foo)); //true
 	console.log(bar._isType(Lib.Package.Bar)); //true
 ```
-An extending class

@@ -46,7 +46,6 @@
 ```
 <br/>
 <br/>
-<br/>
 ```JavaScript
 	OOP.Namespace("Lib.Package.Bar", function(params){
 		var _vars = {

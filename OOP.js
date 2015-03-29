@@ -1,5 +1,5 @@
 ﻿/*
-* OOP v1.0.0 Copyright (c) 2014 AJ Savino
+* OOP v1.0.1 Copyright (c) 2015 AJ Savino
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -118,7 +118,7 @@ var OOP = function(){
 			try { //IE catch
 				event = new CustomEvent(type); //Non-IE
 			} catch (ex){
-				if(document.createEventObject) { //IE
+				if (document.createEventObject){ //IE
 					event = document.createEventObject("Event");
 					if (event.initCustomEvent){
 						event.initCustomEvent(type, true, true);
@@ -127,7 +127,7 @@ var OOP = function(){
 					event = {};
 				}
 			}
-            event._type = type;
+			event._type = type;
 			event._data = data;
 			return event;
 		},
@@ -135,23 +135,26 @@ var OOP = function(){
 		//Safe cross-browser way to listen for one or more events
 		//Pass obj, comma delimeted event types, and a handler
 		addEventListener:function(obj, types, handler){
-			if(!obj._eventHandlers) {
+			if (!obj._eventHandlers){
 				obj._eventHandlers = {};
 			}
 			types = types.split(",");
 			var typesLen = types.length;
 			for (var i = 0; i < typesLen; i++){
-				var type = types[i].trim();
+				var type = types[i];
 				if (obj.addEventListener){ //Standard
 					handler = _methods._addEventHandler(obj, type, handler);
-					obj.addEventListener(type, handler, false);
-				} else if(obj.attachEvent){ //IE
+					obj.addEventListener(type, handler);
+				} else if (obj.attachEvent){ //IE
 					var attachHandler = function(){
 						handler(window.event);
 					}
 					attachHandler.handler = handler; //Store reference to original handler
 					attachHandler = _methods._addEventHandler(obj, type, attachHandler);
 					obj.attachEvent("on" + type, attachHandler);
+				} else if (typeof jQuery !== typeof undefined){ //jQuery
+					handler = _methods._addEventHandler(obj, type, handler);
+					jQuery.on(type, handler);
 				} else { //Custom
 					obj.addEventListener = _methods._addEventListener;
 					obj.addEventListener(type, handler);
@@ -167,15 +170,15 @@ var OOP = function(){
 
 		//Stores and returns handler reference
 		_addEventHandler:function(obj, type, eventHandler){
-			if(!obj._eventHandlers[type]) {
+			if (!obj._eventHandlers[type]){
 				obj._eventHandlers[type] = [];
 			}
 			var eventHandlers = obj._eventHandlers[type];
 			var eventHandlersLen = eventHandlers.length;
-			for(var i = 0; i < eventHandlersLen; i++) {
-				if(eventHandlers[i] === eventHandler) {
+			for (var i = 0; i < eventHandlersLen; i++){
+				if (eventHandlers[i] === eventHandler){
 					return eventHandler;
-				} else if(eventHandlers[i].handler && eventHandlers[i].handler === eventHandler) {
+				} else if (eventHandlers[i].handler && eventHandlers[i].handler === eventHandler){
 					return eventHandlers[i];
 				}
 			}
@@ -187,16 +190,16 @@ var OOP = function(){
 		//Pass obj, comma delimeted event types, and optionally handler
 		//If no handler is passed all handlers for each event type will be removed
 		removeEventListener:function(obj, types, handler){
-			if(!obj._eventHandlers) {
+			if (!obj._eventHandlers){
 				obj._eventHandlers = {};
 			}
 			types = types.split(",");
 			var typesLen = types.length;
 			for (var i = 0; i < typesLen; i++){
-				var type = types[i].trim();
+				var type = types[i];
 				var handlers;
-				if(typeof handler === typeof undefined) {
-					handlers = _vars._eventHandlers[type];
+				if (typeof handler === typeof undefined){
+					handlers = obj._eventHandlers[type] || [];
 				} else {
 					handlers = [handler];
 				}
@@ -205,10 +208,13 @@ var OOP = function(){
 					var handler = handlers[j];
 					if (obj.removeEventListener){ //Standard
 						handler = _methods._removeEventHandler(obj, type, handler);
-						obj.removeEventListener(type, handler, false);
-					} else if(obj.detachEvent){ //IE
+						obj.removeEventListener(type, handler);
+					} else if (obj.detachEvent){ //IE
 						handler = _methods._removeEventHandler(obj, type, handler);
 						obj.detachEvent("on" + type, handler);
+					} else if (typeof jQuery !== typeof undefined){ //jQuery
+						handler = _methods._removeEventHandler(obj, type, handler);
+						jQuery.off(type, handler);
 					} else { //Custom
 						obj.removeEventListener = _methods._removeEventListener;
 						obj.removeEventListener(type, handler);
@@ -220,14 +226,14 @@ var OOP = function(){
 		//This is the custom method that gets added to objects
 		//Pass comma delimeted event types, and optionally handler
 		//If no handler is passed all handlers for each event type will be removed
-		_removeEventListener:function(types, handler) {
+		_removeEventListener:function(types, handler){
 			types = types.split(",");
 			var typesLen = types.length;
 			for (var i = 0; i < typesLen; i++){
-				var type = types[i].trim();
+				var type = types[i];
 				var handlers;
-				if(typeof handler === typeof undefined) {
-					handlers = this._eventHandlers[type];
+				if (typeof handler === typeof undefined){
+					handlers = this._eventHandlers[type] || [];
 				} else {
 					handlers = [handler];
 				}
@@ -241,30 +247,35 @@ var OOP = function(){
 		},
 
 		//Removes and returns handler reference
-		_removeEventHandler:function(obj, type, eventHandler) {
-			if(!obj._eventHandlers[type]) {
+		_removeEventHandler:function(obj, type, eventHandler){
+			if (!obj._eventHandlers[type]){
 				obj._eventHandlers[type] = [];
 			}
 			var eventHandlers = obj._eventHandlers[type];
 			var eventHandlersLen = eventHandlers.length;
-			for(var i = 0; i < eventHandlersLen; i++) {
-				if(eventHandlers[i] === eventHandler) {
-					return eventHandlers.splice(i, 1);
-				} else if(eventHandlers[i].handler && eventHandlers[i].handler === eventHandler) {
-					return eventHandlers.splice(i, 1);
+			for (var i = 0; i < eventHandlersLen; i++){
+				if (eventHandlers[i] === eventHandler){
+					return eventHandlers.splice(i, 1)[0];
+				} else if (eventHandlers[i].handler && eventHandlers[i].handler === eventHandler){
+					return eventHandlers.splice(i, 1)[0];
 				}
 			}
 		},
 
 		//Safe cross-browser way to dispatch an event
 		dispatchEvent:function(obj, event){
-			if(!obj._eventHandlers) {
+			if (!obj._eventHandlers){
 				obj._eventHandlers = {};
 			}
-			if(obj.dispatchEvent){ //Standard
+			if (obj.dispatchEvent){ //Standard
 				obj.dispatchEvent(event);
-			} else if(obj.fireEvent) { //IE
+			} else if (obj.fireEvent){ //IE
 				obj.fireEvent("on" + type, event);
+			} else if (typeof jQuery !== typeof undefined){
+				jQuery(obj).trigger(jQuery.Event(event._type, {
+					_type:event._type,
+					_data:event._data
+				}));
 			} else { //Custom
 				obj.dispatchEvent = _methods._dispatchEvent;
 				obj.dispatchEvent(event);
@@ -272,18 +283,18 @@ var OOP = function(){
 		},
 
 		//This is the custom method that gets added to objects
-		_dispatchEvent:function(event) {
+		_dispatchEvent:function(event){
 			_methods._dispatchEventHandlers(this, event);
 		},
 
 		//Dispatches an event to handler references
-		_dispatchEventHandlers: function(obj, event) {
+		_dispatchEventHandlers: function(obj, event){
 			var eventHandlers = obj._eventHandlers[event._type];
-			if(!eventHandlers){
+			if (!eventHandlers){
 				return;
 			}
 			var eventHandlersLen = eventHandlers.length;
-			for(var i = 0; i < eventHandlersLen; i++) {
+			for (var i = 0; i < eventHandlersLen; i++){
 				eventHandlers[i](event);
 			}
 		},

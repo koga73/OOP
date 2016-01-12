@@ -1,5 +1,6 @@
-﻿/*
-* OOP v1.0.1 Copyright (c) 2015 AJ Savino
+/*
+* OOP v1.0.1 Copyright (c) 2016 AJ Savino
+* https://github.com/koga73/OOP
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal

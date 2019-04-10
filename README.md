@@ -9,6 +9,11 @@ Goals:
 - Provide a cross-browser event model that can be added onto to any object
 - Provide common methods for type checking
 
+## Install:
+```
+npm i @koga73/oop
+```
+
 ## Simple class:
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct(

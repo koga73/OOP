@@ -331,7 +331,7 @@ var OOP = function(){
 			if (!obj._eventHandlers){
 				obj._eventHandlers = {};
 			}
-			types = types.split(/,|\w/);
+			types = types.split(/,|\s/);
 			var typesLen = types.length;
 			for (var i = 0; i < typesLen; i++){
 				var type = types[i];
@@ -386,7 +386,7 @@ var OOP = function(){
 			if (!obj._eventHandlers){
 				obj._eventHandlers = {};
 			}
-			types = types.split(/,|\w/);
+			types = types.split(/,|\s/);
 			var typesLen = types.length;
 			for (var i = 0; i < typesLen; i++){
 				var type = types[i];
@@ -420,7 +420,7 @@ var OOP = function(){
 		//Pass comma or whitespace delimeted event types, and optionally handler
 		//If no handler is passed all handlers for each event type will be removed
 		_removeEventListener:function(types, handler){
-			types = types.split(/,|\w/);
+			types = types.split(/,|\s/);
 			var typesLen = types.length;
 			for (var i = 0; i < typesLen; i++){
 				var type = types[i];

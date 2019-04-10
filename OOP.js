@@ -1,17 +1,17 @@
 /*
-* OOP v1.0.1 Copyright (c) 2016 AJ Savino
+* OOP v2.0.0 Copyright (c) 2019 AJ Savino
 * https://github.com/koga73/OOP
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
 * in the Software without restriction, including without limitation the rights
 * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 * copies of the Software, and to permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
+*
 * The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
+*
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,13 +21,36 @@
 * THE SOFTWARE.
 */
 var OOP = function(){
+	var _instance = null;
+
 	var _methods = {
+		//Adds OOP methods to an obj (such as window by default)
+		//Not required to be called. You can just use OOP without calling this
+		init:function(obj){
+			obj = obj || window;
+
+			var tmp = {};
+			_methods.extend(tmp, false, _instance);
+			//We don't want to override properties on our object
+			for (var prop in tmp){
+				if (typeof obj[prop] !== typeof undefined){
+					delete tmp[prop];
+				}
+			}
+			_methods.extend(false, obj, tmp);
+
+			return obj;
+		},
+
+		/* -=-=-=-=-= BEGIN CLASS =-=-=-=-=- */
+
 		//Namespaces an object or function
 		//Adds a _type property to the obj equal to the namespace
-		namespace:function(namespace, obj){
+		//Start obj defaults to the window
+		namespace:function(namespace, obj, startObj){
 			var objs = namespace.split(".");
 			var objsLen = objs.length;
-			var node = window;
+			var node = startObj || window;
 			for (var i = 0; i < objsLen; i++){
 				var objName = objs[i];
 				if (i == objsLen - 1){
@@ -38,81 +61,194 @@ var OOP = function(){
 				node[objName]._type = objs.slice(0, i + 1).join(".");
 				node = node[objName];
 			}
-
 			return obj;
 		},
 
-		//Adds propertes on extendingObj from new obj if not there
-		//Adds _super property on extendingObj pointing to obj
-		//Updates _interface property on _super chain to point to extendingObj
-		extend:function(obj, extendingObj){
-            if (typeof obj === typeof undefined){
-                throw "Error base object is undefined";
-                return;
-            }
-            if (!_methods._isFunction(obj)){
-				throw "Error base object must be a function";
-				return;
-            }
-			var _super = new obj();
-			
-			for (var prop in _super){
-				if (typeof extendingObj[prop] === typeof undefined){
-					extendingObj[prop] = _super[prop];
-				}
+		//Overwrites properties on obj with those of params
+		//Adds a _type property to namespaced objects
+		//Adds a _super property to the object
+		//Adds an _interface property to the object
+		createClass:function(instance, static, events){
+			static = static || null;
+			events = events === true;
+
+			var caller = null;
+			if (arguments && arguments.callee && arguments.callee.caller){
+				caller = arguments.callee.caller;
 			}
-			
-			var context = _super;
-			do {
-				context._interface = extendingObj;
-				context = context._super;
-			} while (typeof context !== typeof undefined)
-			extendingObj._super = _super;
+			//Arguments can be passed in via objects. Any number of objects is supported
+			var _class = function(){
+				var _super = _class._super || null;
+				if (_methods.isFunction(_super)){
+					_super = new _class._super();
+					_super._interface = this;
+				}
+
+				//Deep copy extending arguments
+				var args = Array.prototype.slice.call(arguments); //To array
+				//Magic line!
+				_methods.extend.apply(this, [this, false, _super, true, instance].concat(args));
+				this._type = _class._type; //Copy type
+				this._super = _super;
+				this._interface = this; //So you don't need to create a var _this and for inheritance
+
+				//Events
+				if (events){
+					_methods.enableEvents(this);
+				}
+
+				return this;
+			};
+			if (static) {
+				_methods.extend(_class, static);
+			}
+			return _class;
+		},
+
+		//Adds super property on class object
+		inherit:function(baseObj, extendingObj){
+			if (typeof baseObj === typeof undefined){
+				throw "base object is undefined";
+			}
+			if (!_methods.isFunction(baseObj)){
+				throw "base object must be a function";
+			}
+			extendingObj._super = baseObj;
 
 			return extendingObj;
 		},
 
-		//Overwrites properties on obj with those of params
-		//Adds an _isType method to obj
-		//Adds an _interface property to obj
-		//Adds a _type property to namespaced objects
-		construct:function(obj, params, events){
-			var type = null;
-			if (arguments && arguments.callee && arguments.callee.caller){
-				type = arguments.callee.caller._type; //Pull type from namespaced object
-				obj._type = type;
-			}
-			obj._isType = function(type) {
-				return _methods.isType(obj, type);
-			}
-			obj._interface = obj;
+		/* -=-=-=-=-= END CLASS =-=-=-=-=- */
 
-			for (var prop in params) {
-				if (_methods._isFunction(obj[prop])){ //Getter/Setter
-					obj[prop](params[prop]);
-				} else {
-					obj[prop] = params[prop];
-				}
+
+
+		/* -=-=-=-=-= BEGIN CORE =-=-=-=-=- */
+
+		//Recursive clone
+		//Pass in an object to be cloned
+		//"deep" defaults to true for deep cloning
+		clone:function(obj, deep){
+			//Default to true
+			if (typeof deep === typeof undefined){
+				deep = true;
+			} else {
+				deep = deep === true;
 			}
-			
-			if (events == true){
-				if (!obj._eventHandlers){
-					obj._eventHandlers = {};
-				}
-				if (!obj.addEventListener){
-					obj.addEventListener = _methods._addEventListener;
-				}
-				if (!obj.removeEventListener){
-					obj.removeEventListener = _methods._removeEventListener;
-				}
-				if (!obj.dispatchEvent){
-					obj.dispatchEvent = _methods._dispatchEvent;
-				}
+			switch (true){
+				case (_methods.isObject(obj)):
+					var clone = {};
+					for (var prop in obj){
+						if (deep){
+							clone[prop] = _methods.clone(obj[prop], deep);
+						} else {
+							clone[prop] = obj[prop];
+						}
+					}
+					return clone;
+				case (_methods.isArray(obj)):
+					if (deep){
+						return obj.map(function(obj){
+							return _methods.clone(obj, deep);
+						});
+					} else {
+						return obj.concat();
+					}
 			}
-			
 			return obj;
 		},
-		
+
+		//Add subsequent object's properties onto object
+		//Pass in an unlimited number of arguments
+		//If you pass in a boolean it indicates the "deep" clone flag for subsequent arguments
+		//{}
+		//{}, {data:1}
+		//{}, {data:{a:2}}
+		//{}, {test:123}, {data:{a:2}}
+		extend:function(){
+			var argumentsLen = arguments.length;
+			switch (argumentsLen){
+				case 0:
+					throw new Error("No arguments specified");
+				case 1:
+					return _methods.clone(arguments[0]);
+				case 2:
+				default:
+					var deep = true; //Default
+					var obj = null;
+					for (var i = 0; i < argumentsLen; i++){
+						var arg = arguments[i];
+						if (_methods.isBoolean(arg)){
+							deep = arg;
+						} else {
+							if (!arg){
+								continue;
+							}
+							//Set obj to first obj found
+							if (!obj){
+								obj = arg;
+								continue;
+							}
+							for (var prop in arg){
+								if (deep){
+									obj[prop] = _methods.clone(arg[prop], deep);
+								} else {
+									obj[prop] = arg[prop];
+								}
+							}
+						}
+					}
+					return obj;
+			}
+		},
+
+		/* -=-=-=-=-= END CORE =-=-=-=-=- */
+
+
+
+		/* -=-=-=-=-= BEGIN HELPERS =-=-=-=-=- */
+
+		isType:function(obj, type){
+			type = type || null;
+			if (!type){
+				return obj._type;
+			}
+
+			var context = obj;
+			do {
+				if (context._type == type || context._type == type._type) {
+					return true;
+				}
+				context = context._super;
+			} while (typeof context !== typeof undefined)
+			return false;
+		},
+
+		isFunction:function(obj){
+			return obj && Object.prototype.toString.call(obj) == "[object Function]";
+		},
+
+		isArray:function(arr){
+			return Array.isArray(arr);
+		},
+
+		isObject:function(obj){
+			return obj && obj.constructor && obj.constructor.toString().indexOf("Object") > -1;
+		},
+
+		isString:function(str){
+			return typeof str === typeof "";
+		},
+
+		isBoolean:function(bool){
+			return bool === true || bool === false;
+		},
+
+		/* -=-=-=-=-= END HELPERS =-=-=-=-=- */
+
+
+
+		/* -=-=-=-=-= BEGIN EVENTS =-=-=-=-=- */
+
 		//Safe cross-browser event (use 'new OOP.Event()')
 		event:function(type, data){
 			var event = null;
@@ -133,13 +269,69 @@ var OOP = function(){
 			return event;
 		},
 
+		//Adds event system to object
+		enableEvents:function(obj, noAlias){
+			noAlias = noAlias === true;
+			if (!obj._eventHandlers){
+				obj._eventHandlers = {};
+			}
+			if (!obj.addEventListener){
+				obj.addEventListener = _methods._addEventListener;
+				if (!noAlias){
+					obj.on = _methods._addEventListener; //Alias
+				}
+			}
+			if (!obj.removeEventListener){
+				obj.removeEventListener = _methods._removeEventListener;
+				if (!noAlias){
+					obj.off = _methods._removeEventListener; //Alias
+				}
+			}
+			if (!obj.dispatchEvent){
+				obj.dispatchEvent = _methods._dispatchEvent;
+				if (!noAlias){
+					obj.trigger = _methods._dispatchEvent; //Alias
+					obj.emit = _methods._dispatchEvent; //Alias
+				}
+			}
+			return obj;
+		},
+
+		//Removes event system from object
+		disableEvents:function(obj, noAlias){
+			noAlias = noAlias === true;
+			if (obj._eventHandlers){
+				delete obj._eventHandlers;
+			}
+			if (obj.addEventListener){
+				delete obj.addEventListener;
+				if (!noAlias){
+					delete obj.on; //Alias
+				}
+			}
+			if (obj.removeEventListener){
+				delete obj.removeEventListener;
+				if (!noAlias){
+					delete obj.off; //Alias
+				}
+			}
+			if (obj.dispatchEvent){
+				delete obj.dispatchEvent;
+				if (!noAlias){
+					delete obj.trigger; //Alias
+					delete obj.emit; //Alias
+				}
+			}
+			return obj;
+		},
+
 		//Safe cross-browser way to listen for one or more events
-		//Pass obj, comma delimeted event types, and a handler
+		//Pass obj, comma or whitespace delimeted event types, and a handler
 		addEventListener:function(obj, types, handler){
 			if (!obj._eventHandlers){
 				obj._eventHandlers = {};
 			}
-			types = types.split(",");
+			types = types.split(/,|\w/);
 			var typesLen = types.length;
 			for (var i = 0; i < typesLen; i++){
 				var type = types[i];
@@ -188,13 +380,13 @@ var OOP = function(){
 		},
 
 		//Safe cross-browser way to listen for one or more events
-		//Pass obj, comma delimeted event types, and optionally handler
+		//Pass obj, comma or whitespace delimeted event types, and optionally handler
 		//If no handler is passed all handlers for each event type will be removed
 		removeEventListener:function(obj, types, handler){
 			if (!obj._eventHandlers){
 				obj._eventHandlers = {};
 			}
-			types = types.split(",");
+			types = types.split(/,|\w/);
 			var typesLen = types.length;
 			for (var i = 0; i < typesLen; i++){
 				var type = types[i];
@@ -225,10 +417,10 @@ var OOP = function(){
 		},
 
 		//This is the custom method that gets added to objects
-		//Pass comma delimeted event types, and optionally handler
+		//Pass comma or whitespace delimeted event types, and optionally handler
 		//If no handler is passed all handlers for each event type will be removed
 		_removeEventListener:function(types, handler){
-			types = types.split(",");
+			types = types.split(/,|\w/);
 			var typesLen = types.length;
 			for (var i = 0; i < typesLen; i++){
 				var type = types[i];
@@ -298,34 +490,44 @@ var OOP = function(){
 			for (var i = 0; i < eventHandlersLen; i++){
 				eventHandlers[i](event);
 			}
-		},
-		
-		isType:function(obj, type){
-			var context = obj;
-			do {
-				if (context._type == type || context._type == type._type) {
-					return true;
-				}
-				context = context._super;
-			} while (typeof context !== typeof undefined)
-			return false;
-		},
-
-		_isFunction:function(obj){
-			return obj && Object.prototype.toString.call(obj) == "[object Function]";
 		}
+
+		/* -=-=-=-=-= END EVENTS =-=-=-=-=- */
 	}
 
-	return {
-		Namespace:_methods.namespace,
-		Extend:_methods.extend,
-		Construct:_methods.construct,
+	//Public API
+	_instance = {
+		init:_methods.init,
+
+		//Class
+		namespace:_methods.namespace,
+		inherit:_methods.inherit,
+		createClass:_methods.createClass,
+		construct:_methods.createClass, //Alias
+
+		//Core
+		clone:_methods.clone,
+		extend:_methods.extend,
+
+		//Helpers
+		isType:_methods.isType,
+		isFunction:_methods.isFunction,
+		isArray:_methods.isArray,
+		isObject:_methods.isObject,
+		isString:_methods.isString,
+		isBoolean:_methods.isBoolean,
+
+		//Events
 		Event:_methods.event,
-
+		enableEvents:_methods.enableEvents,
+		disableEvents:_methods.disableEvents,
 		addEventListener:_methods.addEventListener,
+		on:_methods.addEventListener, //Alias
 		removeEventListener:_methods.removeEventListener,
+		off:_methods.removeEventListener, //Alias
 		dispatchEvent:_methods.dispatchEvent,
-
-		isType: _methods.isType
+		trigger:_methods.dispatchEvent, //Alias
+		emit:_methods.dispatchEvent //Alias
 	};
+	return _instance;
 }();

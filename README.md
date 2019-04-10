@@ -39,7 +39,7 @@ var instance = new foo.bar.Shape();
 console.log(instance);
 ```
 
-### Add static methods, events and pass in parameters:
+### Add static methods and pass parameters to the instance:
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct(
 	//Instance

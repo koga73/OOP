@@ -196,12 +196,16 @@ isBoolean:_methods.isBoolean,
 
 //Events
 Event:_methods.event,
+
 enableEvents:_methods.enableEvents,
 disableEvents:_methods.disableEvents,
+
 addEventListener:_methods.addEventListener,
 on:_methods.addEventListener, //Alias
+
 removeEventListener:_methods.removeEventListener,
 off:_methods.removeEventListener, //Alias
+
 dispatchEvent:_methods.dispatchEvent,
 trigger:_methods.dispatchEvent, //Alias
 emit:_methods.dispatchEvent //Alias

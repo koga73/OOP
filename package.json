@@ -1,6 +1,6 @@
 {
   "name": "@koga73/oop",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "This project when combined with design patterns adds common OOP functionality to JavaScript",
   "main": "OOP.js",
   "scripts": {

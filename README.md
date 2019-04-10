@@ -146,16 +146,6 @@ var obj = OOP.clone({foo:{bar:"foobar"}}); //Makes a deep copy - The foo objects
 var obj = OOP.clone({foo:{bar:"foobar"}}, true); //Makes a shallow copy - The foo objects will be the same reference
 ```
 
-## Type helpers
-```
-OOP.isType
-OOP.isFunction
-OOP.isArray
-OOP.isObject
-OOP.isString
-OOP.isBoolean
-```
-
 ## Extend
 ```
 var foo = {abc:123};
@@ -171,6 +161,16 @@ OOP.extend(foo, false, bar);
 OOP.extend(foo, false, bar, true, {jkl:{mno:789}});
 ```
 Note the number of arguments is unlimited. When a boolean is encountered it sets the "deep" flag for subsequent objects. The first object found in the arguments is what gets extended (you could pass true/false as the first argument).
+
+## Type helpers
+```
+OOP.isType
+OOP.isFunction
+OOP.isArray
+OOP.isObject
+OOP.isString
+OOP.isBoolean
+```
 
 ## Full API
 ```

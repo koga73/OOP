@@ -1,5 +1,5 @@
 /*
-* OOP v2.0.2 Copyright (c) 2019 AJ Savino
+* OOP v2.0.4 Copyright (c) 2019 AJ Savino
 * https://github.com/koga73/OOP
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy

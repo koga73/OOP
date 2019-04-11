@@ -91,7 +91,7 @@ var OOP = function(){
 				//Deep copy extending arguments
 				var args = Array.prototype.slice.call(arguments); //To array
 				//Magic line!
-				_methods.extend.apply(this, [this, false, _super, true, instance].concat(args));
+				_methods.extend.apply(this, [this, false, _super, true, instance, false].concat(args));
 				if (!simple){
 					this._type = _class._type; //Copy type
 					this._super = _super;

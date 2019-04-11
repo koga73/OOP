@@ -1,5 +1,5 @@
 /*
-* OOP v2.0.1 Copyright (c) 2019 AJ Savino
+* OOP v2.0.2 Copyright (c) 2019 AJ Savino
 * https://github.com/koga73/OOP
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -68,9 +68,11 @@ var OOP = function(){
 		//Adds a _type property to namespaced objects
 		//Adds a _super property to the object
 		//Adds an _interface property to the object
-		createClass:function(instance, static, events){
+		//'Simple' param will prevent adding _type, _super, _interface
+		createClass:function(instance, static, events, simple){
 			static = static || null;
 			events = events === true;
+			simple = simple === true;
 
 			var caller = null;
 			if (arguments && arguments.callee && arguments.callee.caller){
@@ -81,16 +83,20 @@ var OOP = function(){
 				var _super = _class._super || null;
 				if (_methods.isFunction(_super)){
 					_super = new _class._super();
-					_super._interface = this;
+					if (!simple){
+						_super._interface = this;
+					}
 				}
 
 				//Deep copy extending arguments
 				var args = Array.prototype.slice.call(arguments); //To array
 				//Magic line!
 				_methods.extend.apply(this, [this, false, _super, true, instance].concat(args));
-				this._type = _class._type; //Copy type
-				this._super = _super;
-				this._interface = this; //So you don't need to create a var _this and for inheritance
+				if (!simple){
+					this._type = _class._type; //Copy type
+					this._super = _super;
+					this._interface = this; //So you don't need to create a var _this and for inheritance
+				}
 
 				//Events
 				if (events){

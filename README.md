@@ -17,8 +17,7 @@ npm i @koga73/oop
 ## Simple class:
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct(
-	//Instance
-	{
+	instance:{
 		width:150,
 		height:150
 	}
@@ -33,8 +32,7 @@ This will allow you to exclude "OOP" in the examples. Same example as above:
 ```
 OOP.init(); //Add OOP methods to the window
 namespace("foo.bar.Shape", construct(
-	//Instance
-	{
+	instance:{
 		width:150,
 		height:150
 	}
@@ -47,13 +45,12 @@ console.log(instance);
 ### Add static methods and pass parameters to the instance:
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct(
-	//Instance
-	{
+	instance:{
 		width:150,
 		height:150
 	},
-	//Static
-	{
+	
+	static:{
 		getArea:function(obj){
 			return obj.width * obj.height;
 		}
@@ -70,13 +67,12 @@ console.log(foo.bar.Shape.getArea(instance));
 ## Inheritance:
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct(
-	//Instance
-	{
+	instance:{
 		width:150,
 		height:150
 	},
-	//Static
-	{
+	
+	static:{
 		getArea:function(obj){
 			return obj.width * obj.height;
 		}
@@ -109,19 +105,18 @@ console.log(OOP._super._type); //"foo.bar.Shape"
 ## Events:
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct(
-	//Instance
-	{
+	instance:{
 		width:150,
 		height:150
 	},
-	//Static
-	{
+	
+	static:{
 		getArea:function(obj){
 			return obj.width * obj.height;
 		}
 	},
-	//Events
-	true
+	
+	events:true
 ));
 
 var instance = new foo.bar.Shape();
@@ -185,7 +180,7 @@ init:_methods.init,
 namespace:_methods.namespace,
 inherit:_methods.inherit,
 createClass:_methods.createClass,
-construct:_methods.createClass, //Alias
+construct:_methods.construct,
 
 //Core
 clone:_methods.clone,

@@ -1,5 +1,5 @@
 /*
-* OOP v2.0.4 Copyright (c) 2019 AJ Savino
+* OOP v2.1.0 Copyright (c) 2019 AJ Savino
 * https://github.com/koga73/OOP
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -54,6 +54,10 @@ var OOP = function(){
 			for (var i = 0; i < objsLen; i++){
 				var objName = objs[i];
 				if (i == objsLen - 1){
+					var tmp = node[objName];
+					if (typeof tmp !== typeof undefined){
+						_methods.extend(false, obj, tmp);
+					}
 					node[objName] = obj;
 				} else {
 					node[objName] = node[objName] || {};
@@ -109,6 +113,14 @@ var OOP = function(){
 				_methods.extend(_class, static);
 			}
 			return _class;
+		},
+
+		construct:function(options){
+			var instance = options.instance;
+			var static = options.static;
+			var events = options.events;
+			var simple = options.simple;
+			return _methods.createClass(instance, static, events, simple);
 		},
 
 		//Adds super property on class object
@@ -225,7 +237,7 @@ var OOP = function(){
 					return true;
 				}
 				context = context._super;
-			} while (typeof context !== typeof undefined)
+			} while (typeof context !== typeof undefined);
 			return false;
 		},
 
@@ -347,7 +359,7 @@ var OOP = function(){
 				} else if (obj.attachEvent){ //IE
 					var attachHandler = function(){
 						handler(window.event);
-					}
+					};
 					attachHandler.handler = handler; //Store reference to original handler
 					attachHandler = _methods._addEventHandler(obj, type, attachHandler);
 					obj.attachEvent("on" + type, attachHandler);
@@ -499,7 +511,7 @@ var OOP = function(){
 		}
 
 		/* -=-=-=-=-= END EVENTS =-=-=-=-=- */
-	}
+	};
 
 	//Public API
 	_instance = {
@@ -509,7 +521,7 @@ var OOP = function(){
 		namespace:_methods.namespace,
 		inherit:_methods.inherit,
 		createClass:_methods.createClass,
-		construct:_methods.createClass, //Alias
+		construct:_methods.construct,
 
 		//Core
 		clone:_methods.clone,

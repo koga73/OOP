@@ -142,7 +142,7 @@ var myObj = {};
 OOP.addEvents(myObj);
 
 myObj.addEventListener("test-event", function(evt, data){
-	console.log("Got event", evt, data);
+    console.log("Got event", evt, data);
 });
 
 myObj.dispatchEvent(new OOP.Event("test-event", 123));

@@ -1,5 +1,5 @@
 /*
-* OOP v2.1.0 Copyright (c) 2019 AJ Savino
+* OOP v2.2.0 Copyright (c) 2019 AJ Savino
 * https://github.com/koga73/OOP
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -92,22 +92,36 @@ var OOP = function(){
 					}
 				}
 
-				//Deep copy extending arguments
-				var args = Array.prototype.slice.call(arguments); //To array
-				//Magic line!
-				_methods.extend.apply(this, [this, false, _super, true, instance, false].concat(args));
+				//To array
+				var args = Array.prototype.slice.call(arguments);
+				var _instance = {};
+				var _public = this;
+				var _private = {};
+
+				//Closure
+				if (_methods.isFunction(instance)){
+					instance = instance(_private, _public); //Pass references, _private first because _public is essentially "this"
+				}
+
+				//Extend super to instance
+				_instance = _methods.extend(_instance, false, _super, true, instance);
+				//Extend public members to new object (public does not start with '_') and apply args
+				_public = _methods.extend.apply(this, [_public, false, /^[^_]/, _instance].concat(args));
+				//Extend private members to new object (public starts with '_')
+				_private = _methods.extend(_private, false, /^_/, _instance);
+
 				if (!simple){
-					this._type = _class._type; //Copy type
-					this._super = _super;
-					this._interface = this; //So you don't need to create a var _this and for inheritance
+					_public._type = _class._type; //Copy type
+					_public._super = _super;
+					_public._interface = _public; //So you don't need to create a var _this and for inheritance
 				}
 
 				//Events
 				if (events){
-					_methods.enableEvents(this);
+					_methods.enableEvents(_public);
 				}
 
-				return this;
+				return _public;
 			};
 			if (static) {
 				_methods.extend(_class, static);
@@ -192,27 +206,38 @@ var OOP = function(){
 				case 2:
 				default:
 					var deep = true; //Default
+					var regex = null; //Default
 					var obj = null;
 					for (var i = 0; i < argumentsLen; i++){
 						var arg = arguments[i];
-						if (_methods.isBoolean(arg)){
-							deep = arg;
-						} else {
-							if (!arg){
-								continue;
-							}
-							//Set obj to first obj found
-							if (!obj){
-								obj = arg;
-								continue;
-							}
-							for (var prop in arg){
-								if (deep){
-									obj[prop] = _methods.clone(arg[prop], deep);
-								} else {
-									obj[prop] = arg[prop];
+						//Type check
+						switch (true){
+							case (_methods.isBoolean(arg)):
+								deep = arg;
+								break;
+							case (_methods.isRegExp(arg)):
+								regex = arg;
+								break;
+							default:
+								if (!arg){
+									continue;
 								}
-							}
+								//Set obj to first obj found
+								if (!obj){
+									obj = arg;
+									continue;
+								}
+								for (var prop in arg){
+									if (regex && !regex.test(prop)){
+										continue;
+									}
+									if (deep){
+										obj[prop] = _methods.clone(arg[prop], deep);
+									} else {
+										obj[prop] = arg[prop];
+									}
+								}
+								break;
 						}
 					}
 					return obj;
@@ -223,7 +248,7 @@ var OOP = function(){
 
 
 
-		/* -=-=-=-=-= BEGIN HELPERS =-=-=-=-=- */
+		/* -=-=-=-=-= BEGIN TYPE CHECKS =-=-=-=-=- */
 
 		isType:function(obj, type){
 			type = type || null;
@@ -261,7 +286,11 @@ var OOP = function(){
 			return bool === true || bool === false;
 		},
 
-		/* -=-=-=-=-= END HELPERS =-=-=-=-=- */
+		isRegExp:function(regex){
+			return regex instanceof RegExp;
+		},
+
+		/* -=-=-=-=-= END TYPE CHECKS =-=-=-=-=- */
 
 
 
@@ -527,13 +556,14 @@ var OOP = function(){
 		clone:_methods.clone,
 		extend:_methods.extend,
 
-		//Helpers
+		//Type checks
 		isType:_methods.isType,
 		isFunction:_methods.isFunction,
 		isArray:_methods.isArray,
 		isObject:_methods.isObject,
 		isString:_methods.isString,
 		isBoolean:_methods.isBoolean,
+		isRegExp:_methods.isRegExp,
 
 		//Events
 		Event:_methods.event,

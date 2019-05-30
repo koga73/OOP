@@ -23,6 +23,10 @@
 var OOP = function(){
 	var _instance = null;
 
+	//For Node
+	var _global = (typeof global !== typeof undefined) ? global : null;
+	var window = window || _global || {};
+	
 	var _methods = {
 		//Adds OOP methods to an obj (such as window by default)
 		//Not required to be called. You can just use OOP without calling this
@@ -583,3 +587,7 @@ var OOP = function(){
 	};
 	return _instance;
 }();
+//TODO: There is probably a better way of doing this
+if (typeof module !== typeof undefined){
+	module.exports = OOP;
+}

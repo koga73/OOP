@@ -11,7 +11,15 @@
     "url": "git+https://github.com/koga73/OOP.git"
   },
   "keywords": [
-    "oop"
+    "oop",
+    "object oriented programming",
+    "inherit",
+    "extend",
+    "clone",
+    "type check",
+    "class",
+    "public",
+    "private"
   ],
   "author": "AJ Savino",
   "license": "MIT",

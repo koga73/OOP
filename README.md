@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/koga73/OOP.svg?branch=feature%2Funit-test)](https://travis-ci.org/koga73/OOP)
+[![Build Status](https://travis-ci.org/koga73/OOP.svg?branch=master)](https://travis-ci.org/koga73/OOP)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/koga73/OOP/blob/master/LICENSE.md)
 
 # OOP

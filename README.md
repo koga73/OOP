@@ -87,7 +87,7 @@ OOP.namespace("foo.bar.Shape", OOP.construct({
 	}
 }));
 
-OOP.namespace("foo.bar.Triangle", OOP.inherit(foo.bar.Shape, OOP.createClass({
+OOP.namespace("foo.bar.Triangle", OOP.inherit(foo.bar.Shape, OOP.construct({
 	//Instance
 	{
         width:300,
@@ -114,17 +114,17 @@ console.log(OOP._super._type); //"foo.bar.Shape"
 ## Events:
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct({
-	instance:{
-		width:100,
-		height:200
-	},
-  events:true,
-	
-	static:{
-		getArea:function(obj){
-			return obj.width * obj.height;
-		}
-	}
+    instance:{
+        width:100,
+        height:200
+    },
+    events:true,
+
+    static:{
+        getArea:function(obj){
+            return obj.width * obj.height;
+        }
+    }
 }));
 
 var instance = new foo.bar.Shape();

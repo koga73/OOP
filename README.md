@@ -17,59 +17,64 @@ Goals:
 npm i @koga73/oop
 ```
 
+### Run unit tests:
+```
+npm test
+```
+
 ## Simple class:
 ```
-OOP.namespace("foo.bar.Shape", OOP.construct(
-	instance:{
-		width:150,
-		height:150
-	}
-));
+OOP.namespace("foo.bar.Shape", OOP.construct({
+  instance:{
+    width:150,
+    height:150
+  }
+}));
 
-var instance = new foo.bar.Shape();
-console.log(instance);
+var defaultShape = new foo.bar.Shape();
+console.log(defaultShape);
 ```
 
 Optionally you can add the OOP methods onto the window or any object.
 This will allow you to exclude "OOP" in the examples. Same example as above:
 ```
-OOP.init(); //Add OOP methods to the window
-namespace("foo.bar.Shape", construct(
-	instance:{
-		width:150,
-		height:150
-	}
-));
+OOP.init(); //Add OOP methods to the window or to any object passed in
+namespace("foo.bar.Shape", construct({
+  instance:{
+    width:150,
+    height:150
+  }
+}));
 
-var instance = new foo.bar.Shape();
-console.log(instance);
+var defaultShape = new foo.bar.Shape();
+console.log(defaultShape);
 ```
 
 ### Add static methods and pass parameters to the instance:
 ```
-OOP.namespace("foo.bar.Shape", OOP.construct(
-	instance:{
-		width:150,
-		height:150
-	},
-	
-	static:{
-		getArea:function(obj){
-			return obj.width * obj.height;
-		}
-	}
-));
+OOP.namespace("foo.bar.Shape", OOP.construct({
+  instance:{
+    width:150,
+    height:150
+  },
+
+  static:{
+    getArea:function(obj){
+      return obj.width * obj.height;
+    }
+  }
+}));
 
 var instance = new foo.bar.Shape({
-	width:100,
-	height:100
+  width:100,
+  height:100
 });
 console.log(foo.bar.Shape.getArea(instance));
 ```
 
 ## Inheritance:
 ```
-OOP.namespace("foo.bar.Shape", OOP.construct(
+OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
 		width:150,
 		height:150
@@ -80,9 +85,9 @@ OOP.namespace("foo.bar.Shape", OOP.construct(
 			return obj.width * obj.height;
 		}
 	}
-));
+}));
 
-OOP.namespace("foo.bar.Triangle", OOP.inherit(foo.bar.Shape, OOP.createClass(
+OOP.namespace("foo.bar.Triangle", OOP.inherit(foo.bar.Shape, OOP.createClass({
 	//Instance
 	{
 		angles:[30, 60, 90]
@@ -93,7 +98,7 @@ OOP.namespace("foo.bar.Triangle", OOP.inherit(foo.bar.Shape, OOP.createClass(
 			return obj.width * obj.height * 0.5;
 		}
 	}
-)));
+})));
 
 var instance = new foo.bar.Triangle();
 console.log(OOP.isType(instance, foo.bar.Triangle)); //true
@@ -107,20 +112,19 @@ console.log(OOP._super._type); //"foo.bar.Shape"
 
 ## Events:
 ```
-OOP.namespace("foo.bar.Shape", OOP.construct(
+OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
 		width:150,
 		height:150
 	},
+  events:true,
 	
 	static:{
 		getArea:function(obj){
 			return obj.width * obj.height;
 		}
-	},
-	
-	events:true
-));
+	}
+}));
 
 var instance = new foo.bar.Shape();
 instance.addEventListener("test-event", function(evt, data){
@@ -134,7 +138,7 @@ Note that events fired from inherited classes (_super) will bubble up (they shar
 ### Add events to any object
 ```
 var myObj = {};
-OOP.enableEvents(myObj);
+OOP.addEvents(myObj);
 
 myObj.addEventListener("test-event", function(evt, data){
 	console.log("Got event", evt, data);
@@ -202,8 +206,8 @@ isRegExp:_methods.isRegExp,
 //Events
 Event:_methods.event,
 
-enableEvents:_methods.enableEvents,
-disableEvents:_methods.disableEvents,
+addEvents:_methods.addEvents,
+removeEvents:_methods.removeEvents,
 
 addEventListener:_methods.addEventListener,
 on:_methods.addEventListener, //Alias

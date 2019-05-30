@@ -98,21 +98,25 @@ var OOP = function(){
 
 				//To array
 				var args = Array.prototype.slice.call(arguments);
-				var _instance = {};
 				var _public = this;
 				var _private = {};
 
 				//Closure
-				if (_methods.isFunction(instance)){
+				var isClosure = _methods.isFunction(instance);
+				if (isClosure){
 					instance = instance(_private, _public); //Pass references, _private first because _public is essentially "this"
 				}
 
-				//Extend super to instance
-				_instance = _methods.extend(_instance, false, _super, true, instance);
-				//Extend public members to new object (public does not start with '_') and apply args
-				_public = _methods.extend.apply(this, [_public, false, /^[^_]/, _instance].concat(args));
-				//Extend private members to new object (public starts with '_')
-				_private = _methods.extend(_private, false, /^_/, _instance);
+				if (isClosure){
+					//Extend super to instance
+					var _instance = _methods.extend(_instance, false, _super, true, instance);
+					//Extend public members to new object (public does not start with '_') and apply args
+					_public = _methods.extend.apply(this, [_public, false, /^[^_]/, _instance].concat(args));
+					//Extend private members to new object (public starts with '_')
+					_private = _methods.extend(_private, false, /^_/, _instance);
+				} else {
+					_public = _methods.extend.apply(this, [_public, false, _super, true, instance].concat(args));
+				}
 
 				if (!simple){
 					_public._type = _class._type; //Copy type
@@ -122,7 +126,7 @@ var OOP = function(){
 
 				//Events
 				if (events){
-					_methods.enableEvents(_public);
+					_methods.addEvents(_public);
 				}
 
 				return _public;
@@ -306,7 +310,7 @@ var OOP = function(){
 			try { //IE catch
 				event = new CustomEvent(type); //Non-IE
 			} catch (ex){
-				if (document.createEventObject){ //IE
+				if (typeof document !== typeof undefined && document.createEventObject){ //IE
 					event = document.createEventObject("Event");
 					if (event.initCustomEvent){
 						event.initCustomEvent(type, true, true);
@@ -321,7 +325,7 @@ var OOP = function(){
 		},
 
 		//Adds event system to object
-		enableEvents:function(obj, noAlias){
+		addEvents:function(obj, noAlias){
 			noAlias = noAlias === true;
 			if (!obj._eventHandlers){
 				obj._eventHandlers = {};
@@ -349,7 +353,7 @@ var OOP = function(){
 		},
 
 		//Removes event system from object
-		disableEvents:function(obj, noAlias){
+		removeEvents:function(obj, noAlias){
 			noAlias = noAlias === true;
 			if (obj._eventHandlers){
 				delete obj._eventHandlers;
@@ -539,7 +543,7 @@ var OOP = function(){
 			}
 			var eventHandlersLen = eventHandlers.length;
 			for (var i = 0; i < eventHandlersLen; i++){
-				eventHandlers[i](event);
+				eventHandlers[i](event, event._data);
 			}
 		}
 
@@ -572,8 +576,8 @@ var OOP = function(){
 		//Events
 		Event:_methods.event,
 
-		enableEvents:_methods.enableEvents,
-		disableEvents:_methods.disableEvents,
+		addEvents:_methods.addEvents,
+		removeEvents:_methods.removeEvents,
 
 		addEventListener:_methods.addEventListener,
 		on:_methods.addEventListener, //Alias

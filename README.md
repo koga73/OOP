@@ -1,10 +1,10 @@
+[![Build Status](https://travis-ci.org/koga73/OOP.svg?branch=feature%2Funit-test)](https://travis-ci.org/koga73/OOP)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # OOP
 *By: AJ Savino*
 
 This project when combined with design patterns adds common OOP functionality to JavaScript
-
-[![Build Status](https://travis-ci.org/koga73/OOP.svg?branch=feature%2Funit-test)](https://travis-ci.org/koga73/OOP)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Goals:
 - Provide OOP like functionality including namespacing, classes, inheritance
@@ -165,7 +165,7 @@ OOP.extend(foo, false, bar, true, {jkl:{mno:789}});
 ```
 Note the number of arguments is unlimited. When a boolean is encountered it sets the "deep" flag for subsequent objects. The first object found in the arguments is what gets extended (you could pass true/false as the first argument).
 
-## Type helpers
+## Type checks
 ```
 OOP.isType
 OOP.isFunction
@@ -173,6 +173,7 @@ OOP.isArray
 OOP.isObject
 OOP.isString
 OOP.isBoolean
+OOP.isRegExp
 ```
 
 ## Full API
@@ -189,13 +190,14 @@ construct:_methods.construct,
 clone:_methods.clone,
 extend:_methods.extend,
 
-//Helpers
+//Type checks
 isType:_methods.isType,
 isFunction:_methods.isFunction,
 isArray:_methods.isArray,
 isObject:_methods.isObject,
 isString:_methods.isString,
 isBoolean:_methods.isBoolean,
+isRegExp:_methods.isRegExp,
 
 //Events
 Event:_methods.event,

@@ -60,7 +60,7 @@ OOP.namespace("foo.bar.Shape", OOP.construct({
 
     static:{
         getArea:function(obj){
-        return obj.width * obj.height;
+            return obj.width * obj.height;
         }
     }
 }));
@@ -75,30 +75,30 @@ console.log(foo.bar.Shape.getArea(instance));
 ## Inheritance:
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct({
-	instance:{
-		width:100,
-		height:200
-	},
-	
-	static:{
-		getArea:function(obj){
-			return obj.width * obj.height;
-		}
-	}
+    instance:{
+        width:100,
+        height:200
+    },
+
+    static:{
+        getArea:function(obj){
+            return obj.width * obj.height;
+        }
+    }
 }));
 
 OOP.namespace("foo.bar.Triangle", OOP.inherit(foo.bar.Shape, OOP.construct({
-	//Instance
-	{
+    //Instance
+    {
         width:300,
-		angles:[30, 60, 90]
-	},
-	//Static
-	{
-		getArea:function(obj){
-			return obj.width * obj.height * 0.5;
-		}
-	}
+        angles:[30, 60, 90]
+    },
+    //Static
+    {
+        getArea:function(obj){
+            return obj.width * obj.height * 0.5;
+        }
+    }
 })));
 
 var instance = new foo.bar.Triangle();

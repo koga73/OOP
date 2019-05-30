@@ -12,17 +12,17 @@ Goals:
 - Provide common methods for type checking
 
 ## Install:
-```
+``` bash
 npm i @koga73/oop
 ```
 
 ### Run unit tests:
-```
+``` bash
 npm test
 ```
 
 ## Simple class:
-```
+``` javascript
 OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
 		width:100,
@@ -36,7 +36,7 @@ console.log(defaultShape);
 
 Optionally you can add the OOP methods onto the window or any object.
 This will allow you to exclude "OOP" in the examples. Same example as above:
-```
+``` javascript
 OOP.init(); //Add OOP methods to the window or to any object passed in
 namespace("foo.bar.Shape", construct({
 	instance:{
@@ -50,7 +50,7 @@ console.log(defaultShape);
 ```
 
 ### Add static methods and pass parameters to the instance:
-```
+``` javascript
 OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
 		width:100,
@@ -72,7 +72,7 @@ console.log(foo.bar.Shape.getArea(instance));
 ```
 
 ## Inheritance:
-```
+``` javascript
 OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
 		width:100,
@@ -110,7 +110,7 @@ console.log(OOP._super._type); //"foo.bar.Shape"
 ```
 
 ## Events:
-```
+``` javascript
 OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
 		width:100,
@@ -135,7 +135,7 @@ instance.dispatchEvent(new OOP.Event("test-event", 123));
 Note that events fired from inherited classes (_super) will bubble up (they share the same _eventHandlers)
 
 ### Add events to any object
-```
+``` javascript
 var myObj = {};
 OOP.addEvents(myObj);
 
@@ -147,13 +147,13 @@ myObj.dispatchEvent(new OOP.Event("test-event", 123));
 ```
 
 ## Clone
-```
+``` javascript
 var obj = OOP.clone({foo:{bar:"foobar"}}); //Makes a deep copy - The foo objects will be different
 var obj = OOP.clone({foo:{bar:"foobar"}}, false); //Makes a shallow copy - The foo objects will be the same reference
 ```
 
 ## Extend
-```
+``` javascript
 var foo = {abc:123};
 var bar = {def:{ghi:456}};
 
@@ -169,7 +169,7 @@ OOP.extend(foo, false, bar, true, {jkl:{mno:789}});
 Note the number of arguments is unlimited. When a boolean is encountered it sets the "deep" flag for subsequent objects. The first object found in the arguments is what gets extended (you could pass true/false as the first argument).
 
 ## Type checks
-```
+``` javascript
 OOP.isType
 OOP.isFunction
 OOP.isArray
@@ -180,41 +180,43 @@ OOP.isRegExp
 ```
 
 ## Full API
-```
-init:_methods.init,
+``` javascript
+{
+	init:_methods.init,
 
-//Class
-namespace:_methods.namespace,
-inherit:_methods.inherit,
-createClass:_methods.createClass,
-construct:_methods.construct,
+	//Class
+	namespace:_methods.namespace,
+	inherit:_methods.inherit,
+	createClass:_methods.createClass,
+	construct:_methods.construct,
 
-//Core
-clone:_methods.clone,
-extend:_methods.extend,
+	//Core
+	clone:_methods.clone,
+	extend:_methods.extend,
 
-//Type checks
-isType:_methods.isType,
-isFunction:_methods.isFunction,
-isArray:_methods.isArray,
-isObject:_methods.isObject,
-isString:_methods.isString,
-isBoolean:_methods.isBoolean,
-isRegExp:_methods.isRegExp,
+	//Type checks
+	isType:_methods.isType,
+	isFunction:_methods.isFunction,
+	isArray:_methods.isArray,
+	isObject:_methods.isObject,
+	isString:_methods.isString,
+	isBoolean:_methods.isBoolean,
+	isRegExp:_methods.isRegExp,
 
-//Events
-Event:_methods.event,
+	//Events
+	Event:_methods.event,
 
-addEvents:_methods.addEvents,
-removeEvents:_methods.removeEvents,
+	addEvents:_methods.addEvents,
+	removeEvents:_methods.removeEvents,
 
-addEventListener:_methods.addEventListener,
-on:_methods.addEventListener, //Alias
+	addEventListener:_methods.addEventListener,
+	on:_methods.addEventListener, //Alias
 
-removeEventListener:_methods.removeEventListener,
-off:_methods.removeEventListener, //Alias
+	removeEventListener:_methods.removeEventListener,
+	off:_methods.removeEventListener, //Alias
 
-dispatchEvent:_methods.dispatchEvent,
-trigger:_methods.dispatchEvent, //Alias
-emit:_methods.dispatchEvent //Alias
+	dispatchEvent:_methods.dispatchEvent,
+	trigger:_methods.dispatchEvent, //Alias
+	emit:_methods.dispatchEvent //Alias
+}
 ```

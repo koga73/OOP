@@ -1,8 +1,7 @@
 [![Build Status](https://travis-ci.org/koga73/OOP.svg?branch=feature%2Funit-test)](https://travis-ci.org/koga73/OOP)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/koga73/OOP/blob/master/LICENSE.md)
 
 # OOP
-*By: AJ Savino*
 
 This project when combined with design patterns adds common OOP functionality to JavaScript
 
@@ -151,7 +150,7 @@ myObj.dispatchEvent(new OOP.Event("test-event", 123));
 ## Clone
 ```
 var obj = OOP.clone({foo:{bar:"foobar"}}); //Makes a deep copy - The foo objects will be different
-var obj = OOP.clone({foo:{bar:"foobar"}}, true); //Makes a shallow copy - The foo objects will be the same reference
+var obj = OOP.clone({foo:{bar:"foobar"}}, false); //Makes a shallow copy - The foo objects will be the same reference
 ```
 
 ## Extend

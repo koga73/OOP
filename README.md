@@ -3,6 +3,9 @@
 
 This project when combined with design patterns adds common OOP functionality to JavaScript
 
+[![Build Status](https://travis-ci.org/koga73/OOP.svg?branch=feature%2Funit-test)](https://travis-ci.org/koga73/OOP)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Goals:
 - Provide OOP like functionality including namespacing, classes, inheritance
 - Provide methods for cloning and extending objects

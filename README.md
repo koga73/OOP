@@ -25,10 +25,10 @@ npm test
 ## Simple class:
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct({
-  instance:{
-    width:150,
-    height:150
-  }
+    instance:{
+        width:100,
+        height:200
+    }
 }));
 
 var defaultShape = new foo.bar.Shape();
@@ -40,10 +40,10 @@ This will allow you to exclude "OOP" in the examples. Same example as above:
 ```
 OOP.init(); //Add OOP methods to the window or to any object passed in
 namespace("foo.bar.Shape", construct({
-  instance:{
-    width:150,
-    height:150
-  }
+    instance:{
+        width:100,
+        height:200
+    }
 }));
 
 var defaultShape = new foo.bar.Shape();
@@ -53,21 +53,21 @@ console.log(defaultShape);
 ### Add static methods and pass parameters to the instance:
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct({
-  instance:{
-    width:150,
-    height:150
-  },
+    instance:{
+        width:100,
+        height:200
+    },
 
-  static:{
-    getArea:function(obj){
-      return obj.width * obj.height;
+    static:{
+        getArea:function(obj){
+        return obj.width * obj.height;
+        }
     }
-  }
 }));
 
 var instance = new foo.bar.Shape({
-  width:100,
-  height:100
+    width:300,
+    height:400
 });
 console.log(foo.bar.Shape.getArea(instance));
 ```
@@ -76,8 +76,8 @@ console.log(foo.bar.Shape.getArea(instance));
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
-		width:150,
-		height:150
+		width:100,
+		height:200
 	},
 	
 	static:{
@@ -90,6 +90,7 @@ OOP.namespace("foo.bar.Shape", OOP.construct({
 OOP.namespace("foo.bar.Triangle", OOP.inherit(foo.bar.Shape, OOP.createClass({
 	//Instance
 	{
+        width:300,
 		angles:[30, 60, 90]
 	},
 	//Static
@@ -114,8 +115,8 @@ console.log(OOP._super._type); //"foo.bar.Shape"
 ```
 OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
-		width:150,
-		height:150
+		width:100,
+		height:200
 	},
   events:true,
 	

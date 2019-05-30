@@ -181,42 +181,40 @@ OOP.isRegExp
 
 ## Full API
 ``` javascript
-{
-	init:_methods.init,
+init:_methods.init,
 
-	//Class
-	namespace:_methods.namespace,
-	inherit:_methods.inherit,
-	createClass:_methods.createClass,
-	construct:_methods.construct,
+//Class
+namespace:_methods.namespace,
+inherit:_methods.inherit,
+createClass:_methods.createClass,
+construct:_methods.construct,
 
-	//Core
-	clone:_methods.clone,
-	extend:_methods.extend,
+//Core
+clone:_methods.clone,
+extend:_methods.extend,
 
-	//Type checks
-	isType:_methods.isType,
-	isFunction:_methods.isFunction,
-	isArray:_methods.isArray,
-	isObject:_methods.isObject,
-	isString:_methods.isString,
-	isBoolean:_methods.isBoolean,
-	isRegExp:_methods.isRegExp,
+//Type checks
+isType:_methods.isType,
+isFunction:_methods.isFunction,
+isArray:_methods.isArray,
+isObject:_methods.isObject,
+isString:_methods.isString,
+isBoolean:_methods.isBoolean,
+isRegExp:_methods.isRegExp,
 
-	//Events
-	Event:_methods.event,
+//Events
+Event:_methods.event,
 
-	addEvents:_methods.addEvents,
-	removeEvents:_methods.removeEvents,
+addEvents:_methods.addEvents,
+removeEvents:_methods.removeEvents,
 
-	addEventListener:_methods.addEventListener,
-	on:_methods.addEventListener, //Alias
+addEventListener:_methods.addEventListener,
+on:_methods.addEventListener, //Alias
 
-	removeEventListener:_methods.removeEventListener,
-	off:_methods.removeEventListener, //Alias
+removeEventListener:_methods.removeEventListener,
+off:_methods.removeEventListener, //Alias
 
-	dispatchEvent:_methods.dispatchEvent,
-	trigger:_methods.dispatchEvent, //Alias
-	emit:_methods.dispatchEvent //Alias
-}
+dispatchEvent:_methods.dispatchEvent,
+trigger:_methods.dispatchEvent, //Alias
+emit:_methods.dispatchEvent //Alias
 ```

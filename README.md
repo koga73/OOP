@@ -1,5 +1,7 @@
+[![Build Status](https://travis-ci.org/koga73/OOP.svg?branch=master)](https://travis-ci.org/koga73/OOP)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/koga73/OOP/blob/master/LICENSE.md)
+
 # OOP
-*By: AJ Savino*
 
 This project when combined with design patterns adds common OOP functionality to JavaScript
 
@@ -10,114 +12,119 @@ Goals:
 - Provide common methods for type checking
 
 ## Install:
-```
+``` bash
 npm i @koga73/oop
 ```
 
-## Simple class:
+### Run unit tests:
+``` bash
+npm test
 ```
-OOP.namespace("foo.bar.Shape", OOP.construct(
-	instance:{
-		width:150,
-		height:150
-	}
-));
 
-var instance = new foo.bar.Shape();
-console.log(instance);
+## Simple class:
+``` javascript
+OOP.namespace("foo.bar.Shape", OOP.construct({
+	instance:{
+		width:100,
+		height:200
+	}
+}));
+
+var defaultShape = new foo.bar.Shape();
+console.log(defaultShape);
 ```
 
 Optionally you can add the OOP methods onto the window or any object.
 This will allow you to exclude "OOP" in the examples. Same example as above:
-```
-OOP.init(); //Add OOP methods to the window
-namespace("foo.bar.Shape", construct(
+``` javascript
+OOP.init(); //Add OOP methods to the window or to any object passed in
+namespace("foo.bar.Shape", construct({
 	instance:{
-		width:150,
-		height:150
+		width:100,
+		height:200
 	}
-));
+}));
 
-var instance = new foo.bar.Shape();
-console.log(instance);
+var defaultShape = new foo.bar.Shape();
+console.log(defaultShape);
 ```
 
 ### Add static methods and pass parameters to the instance:
-```
-OOP.namespace("foo.bar.Shape", OOP.construct(
+``` javascript
+OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
-		width:150,
-		height:150
+		width:100,
+		height:200
 	},
-	
+
 	static:{
 		getArea:function(obj){
 			return obj.width * obj.height;
 		}
 	}
-));
+}));
 
 var instance = new foo.bar.Shape({
-	width:100,
-	height:100
+	width:300,
+	height:400
 });
 console.log(foo.bar.Shape.getArea(instance));
 ```
 
 ## Inheritance:
-```
-OOP.namespace("foo.bar.Shape", OOP.construct(
+``` javascript
+OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
-		width:150,
-		height:150
+		width:100,
+		height:200
 	},
-	
+
 	static:{
 		getArea:function(obj){
 			return obj.width * obj.height;
 		}
 	}
-));
+}));
 
-OOP.namespace("foo.bar.Triangle", OOP.inherit(foo.bar.Shape, OOP.createClass(
-	//Instance
-	{
+OOP.namespace("foo.bar.Triangle", OOP.inherit(foo.bar.Shape, OOP.construct({
+	instance:{
+		width:300,
 		angles:[30, 60, 90]
 	},
-	//Static
-	{
+
+	static:{
 		getArea:function(obj){
 			return obj.width * obj.height * 0.5;
 		}
 	}
-)));
+})));
 
-var instance = new foo.bar.Triangle();
-console.log(OOP.isType(instance, foo.bar.Triangle)); //true
-console.log(OOP.isType(instance, foo.bar.Shape)); //true
-console.log(OOP._interface); //Triangle instance
-console.log(OOP._super); //Shape instance
-console.log(OOP._super._interface); //Triangle instance
-console.log(OOP._type); //"foo.bar.Triangle"
-console.log(OOP._super._type); //"foo.bar.Shape"
+var triangle = new foo.bar.Triangle();
+console.log(OOP.isType(triangle, foo.bar.Triangle)); //true
+console.log(OOP.isType(triangle, "foo.bar.Triangle")); //true
+console.log(OOP.isType(triangle, foo.bar.Shape)); //true
+console.log(triangle._interface); //Triangle instance
+console.log(triangle._super); //Shape instance
+console.log(triangle._super._interface); //Triangle instance
+console.log(triangle._type); //"foo.bar.Triangle"
+console.log(triangle._super._type); //"foo.bar.Shape"
 ```
 
 ## Events:
-```
-OOP.namespace("foo.bar.Shape", OOP.construct(
+``` javascript
+OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
-		width:150,
-		height:150
+		width:100,
+		height:200
 	},
-	
+	events:true,
+
 	static:{
 		getArea:function(obj){
 			return obj.width * obj.height;
 		}
-	},
-	
-	events:true
-));
+	}
+}));
 
 var instance = new foo.bar.Shape();
 instance.addEventListener("test-event", function(evt, data){
@@ -129,9 +136,9 @@ instance.dispatchEvent(new OOP.Event("test-event", 123));
 Note that events fired from inherited classes (_super) will bubble up (they share the same _eventHandlers)
 
 ### Add events to any object
-```
+``` javascript
 var myObj = {};
-OOP.enableEvents(myObj);
+OOP.addEvents(myObj);
 
 myObj.addEventListener("test-event", function(evt, data){
 	console.log("Got event", evt, data);
@@ -141,13 +148,13 @@ myObj.dispatchEvent(new OOP.Event("test-event", 123));
 ```
 
 ## Clone
-```
+``` javascript
 var obj = OOP.clone({foo:{bar:"foobar"}}); //Makes a deep copy - The foo objects will be different
-var obj = OOP.clone({foo:{bar:"foobar"}}, true); //Makes a shallow copy - The foo objects will be the same reference
+var obj = OOP.clone({foo:{bar:"foobar"}}, false); //Makes a shallow copy - The foo objects will be the same reference
 ```
 
 ## Extend
-```
+``` javascript
 var foo = {abc:123};
 var bar = {def:{ghi:456}};
 
@@ -162,18 +169,19 @@ OOP.extend(foo, false, bar, true, {jkl:{mno:789}});
 ```
 Note the number of arguments is unlimited. When a boolean is encountered it sets the "deep" flag for subsequent objects. The first object found in the arguments is what gets extended (you could pass true/false as the first argument).
 
-## Type helpers
-```
+## Type checks
+``` javascript
 OOP.isType
 OOP.isFunction
 OOP.isArray
 OOP.isObject
 OOP.isString
 OOP.isBoolean
+OOP.isRegExp
 ```
 
 ## Full API
-```
+``` javascript
 init:_methods.init,
 
 //Class
@@ -186,19 +194,20 @@ construct:_methods.construct,
 clone:_methods.clone,
 extend:_methods.extend,
 
-//Helpers
+//Type checks
 isType:_methods.isType,
 isFunction:_methods.isFunction,
 isArray:_methods.isArray,
 isObject:_methods.isObject,
 isString:_methods.isString,
 isBoolean:_methods.isBoolean,
+isRegExp:_methods.isRegExp,
 
 //Events
 Event:_methods.event,
 
-enableEvents:_methods.enableEvents,
-disableEvents:_methods.disableEvents,
+addEvents:_methods.addEvents,
+removeEvents:_methods.removeEvents,
 
 addEventListener:_methods.addEventListener,
 on:_methods.addEventListener, //Alias

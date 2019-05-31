@@ -1,5 +1,5 @@
 /*
-* OOP v2.1.0 Copyright (c) 2019 AJ Savino
+* OOP v2.2.0 Copyright (c) 2019 AJ Savino
 * https://github.com/koga73/OOP
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,11 +23,16 @@
 var OOP = function(){
 	var _instance = null;
 
+	//For Node
+	var _window = (typeof window !== typeof undefined) ? window : null;
+	var _global = (typeof global !== typeof undefined) ? global : null;
+	var _defaultObj = _window || _global || null;
+	
 	var _methods = {
-		//Adds OOP methods to an obj (such as window by default)
+		//Adds OOP methods to an obj (such as window/global by default)
 		//Not required to be called. You can just use OOP without calling this
 		init:function(obj){
-			obj = obj || window;
+			obj = obj || _defaultObj;
 
 			var tmp = {};
 			_methods.extend(tmp, false, _instance);
@@ -46,11 +51,11 @@ var OOP = function(){
 
 		//Namespaces an object or function
 		//Adds a _type property to the obj equal to the namespace
-		//Start obj defaults to the window
+		//Start obj defaults to the window/global
 		namespace:function(namespace, obj, startObj){
 			var objs = namespace.split(".");
 			var objsLen = objs.length;
-			var node = startObj || window;
+			var node = startObj || _defaultObj;
 			for (var i = 0; i < objsLen; i++){
 				var objName = objs[i];
 				if (i == objsLen - 1){
@@ -92,22 +97,40 @@ var OOP = function(){
 					}
 				}
 
-				//Deep copy extending arguments
-				var args = Array.prototype.slice.call(arguments); //To array
-				//Magic line!
-				_methods.extend.apply(this, [this, false, _super, true, instance, false].concat(args));
+				//To array
+				var args = Array.prototype.slice.call(arguments);
+				var _public = this;
+				var _private = {};
+
+				//Closure
+				var isClosure = _methods.isFunction(instance);
+				if (isClosure){
+					instance = instance(_private, _public); //Pass references, _private first because _public is essentially "this"
+				}
+
+				if (isClosure){
+					//Extend super to instance
+					var _instance = _methods.extend(_instance, false, _super, true, instance);
+					//Extend public members to new object (public does not start with '_') and apply args
+					_public = _methods.extend.apply(this, [_public, false, /^[^_]/, _instance].concat(args));
+					//Extend private members to new object (public starts with '_')
+					_private = _methods.extend(_private, false, /^_/, _instance);
+				} else {
+					_public = _methods.extend.apply(this, [_public, false, _super, true, instance].concat(args));
+				}
+
 				if (!simple){
-					this._type = _class._type; //Copy type
-					this._super = _super;
-					this._interface = this; //So you don't need to create a var _this and for inheritance
+					_public._type = _class._type; //Copy type
+					_public._super = _super;
+					_public._interface = _public; //So you don't need to create a var _this and for inheritance
 				}
 
 				//Events
 				if (events){
-					_methods.enableEvents(this);
+					_methods.addEvents(_public);
 				}
 
-				return this;
+				return _public;
 			};
 			if (static) {
 				_methods.extend(_class, static);
@@ -192,27 +215,38 @@ var OOP = function(){
 				case 2:
 				default:
 					var deep = true; //Default
+					var regex = null; //Default
 					var obj = null;
 					for (var i = 0; i < argumentsLen; i++){
 						var arg = arguments[i];
-						if (_methods.isBoolean(arg)){
-							deep = arg;
-						} else {
-							if (!arg){
-								continue;
-							}
-							//Set obj to first obj found
-							if (!obj){
-								obj = arg;
-								continue;
-							}
-							for (var prop in arg){
-								if (deep){
-									obj[prop] = _methods.clone(arg[prop], deep);
-								} else {
-									obj[prop] = arg[prop];
+						//Type check
+						switch (true){
+							case (_methods.isBoolean(arg)):
+								deep = arg;
+								break;
+							case (_methods.isRegExp(arg)):
+								regex = arg;
+								break;
+							default:
+								if (!arg){
+									continue;
 								}
-							}
+								//Set obj to first obj found
+								if (!obj){
+									obj = arg;
+									continue;
+								}
+								for (var prop in arg){
+									if (regex && !regex.test(prop)){
+										continue;
+									}
+									if (deep){
+										obj[prop] = _methods.clone(arg[prop], deep);
+									} else {
+										obj[prop] = arg[prop];
+									}
+								}
+								break;
 						}
 					}
 					return obj;
@@ -223,7 +257,7 @@ var OOP = function(){
 
 
 
-		/* -=-=-=-=-= BEGIN HELPERS =-=-=-=-=- */
+		/* -=-=-=-=-= BEGIN TYPE CHECKS =-=-=-=-=- */
 
 		isType:function(obj, type){
 			type = type || null;
@@ -261,7 +295,11 @@ var OOP = function(){
 			return bool === true || bool === false;
 		},
 
-		/* -=-=-=-=-= END HELPERS =-=-=-=-=- */
+		isRegExp:function(regex){
+			return regex instanceof RegExp;
+		},
+
+		/* -=-=-=-=-= END TYPE CHECKS =-=-=-=-=- */
 
 
 
@@ -273,7 +311,7 @@ var OOP = function(){
 			try { //IE catch
 				event = new CustomEvent(type); //Non-IE
 			} catch (ex){
-				if (document.createEventObject){ //IE
+				if (typeof document !== typeof undefined && document.createEventObject){ //IE
 					event = document.createEventObject("Event");
 					if (event.initCustomEvent){
 						event.initCustomEvent(type, true, true);
@@ -288,7 +326,7 @@ var OOP = function(){
 		},
 
 		//Adds event system to object
-		enableEvents:function(obj, noAlias){
+		addEvents:function(obj, noAlias){
 			noAlias = noAlias === true;
 			if (!obj._eventHandlers){
 				obj._eventHandlers = {};
@@ -316,7 +354,7 @@ var OOP = function(){
 		},
 
 		//Removes event system from object
-		disableEvents:function(obj, noAlias){
+		removeEvents:function(obj, noAlias){
 			noAlias = noAlias === true;
 			if (obj._eventHandlers){
 				delete obj._eventHandlers;
@@ -358,7 +396,7 @@ var OOP = function(){
 					obj.addEventListener(type, handler);
 				} else if (obj.attachEvent){ //IE
 					var attachHandler = function(){
-						handler(window.event);
+						handler(_defaultObj.event);
 					};
 					attachHandler.handler = handler; //Store reference to original handler
 					attachHandler = _methods._addEventHandler(obj, type, attachHandler);
@@ -506,7 +544,7 @@ var OOP = function(){
 			}
 			var eventHandlersLen = eventHandlers.length;
 			for (var i = 0; i < eventHandlersLen; i++){
-				eventHandlers[i](event);
+				eventHandlers[i](event, event._data);
 			}
 		}
 
@@ -527,19 +565,20 @@ var OOP = function(){
 		clone:_methods.clone,
 		extend:_methods.extend,
 
-		//Helpers
+		//Type checks
 		isType:_methods.isType,
 		isFunction:_methods.isFunction,
 		isArray:_methods.isArray,
 		isObject:_methods.isObject,
 		isString:_methods.isString,
 		isBoolean:_methods.isBoolean,
+		isRegExp:_methods.isRegExp,
 
 		//Events
 		Event:_methods.event,
 
-		enableEvents:_methods.enableEvents,
-		disableEvents:_methods.disableEvents,
+		addEvents:_methods.addEvents,
+		removeEvents:_methods.removeEvents,
 
 		addEventListener:_methods.addEventListener,
 		on:_methods.addEventListener, //Alias
@@ -553,3 +592,7 @@ var OOP = function(){
 	};
 	return _instance;
 }();
+//TODO: There is probably a better way of doing this
+if (typeof module !== typeof undefined){
+	module.exports = OOP;
+}

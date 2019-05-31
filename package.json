@@ -1,22 +1,34 @@
 {
   "name": "@koga73/oop",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "This project when combined with design patterns adds common OOP functionality to JavaScript",
-  "main": "OOP.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/test.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/koga73/OOP.git"
   },
   "keywords": [
-    "oop"
+    "oop",
+    "object oriented programming",
+    "inherit",
+    "extend",
+    "clone",
+    "type check",
+    "class",
+    "public",
+    "private"
   ],
   "author": "AJ Savino",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/koga73/OOP/issues"
   },
-  "homepage": "https://github.com/koga73/OOP#readme"
+  "homepage": "https://github.com/koga73/OOP#readme",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4"
+  }
 }

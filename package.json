@@ -27,7 +27,7 @@
     "url": "https://github.com/koga73/OOP/issues"
   },
   "homepage": "https://github.com/koga73/OOP#readme",
-  "dependencies": {
+  "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.1.4"
   }

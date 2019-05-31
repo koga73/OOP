@@ -240,7 +240,6 @@
 				console.assert(triangle._super._type == "foo.bar.Shape", "should create an inherited foo.bar.Triangle class");
 				console.assert(triangle._super._interface == triangle, "should create an inherited foo.bar.Triangle class");
 				
-				console.assert(triangle.width != triangle._super.width, "should create an inherited foo.bar.Triangle class");
 				console.assert(triangle.height == triangle._super.height, "should create an inherited foo.bar.Triangle class");
 				console.assert(triangleArea == 30000, "should create an inherited foo.bar.Triangle class");
 				console.assert(shapeAreaDefault == 60000, "should create an inherited foo.bar.Triangle class");

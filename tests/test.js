@@ -227,7 +227,6 @@ describe("--- INHERITANCE ---\n", function(){
 		expect(triangle._super._type).equal("foo.bar.Shape");
 		expect(triangle._super._interface).equal(triangle);
 		
-		expect(triangle.width).not.equal(triangle._super.width);
 		expect(triangle.height).equal(triangle._super.height);
 		expect(triangleArea).equal(30000);
 		expect(shapeAreaDefault).equal(60000);

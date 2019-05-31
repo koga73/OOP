@@ -1,5 +1,5 @@
 /*
-* OOP v2.2.0 Copyright (c) 2019 AJ Savino
+* OOP v2.2.1 Copyright (c) 2019 AJ Savino
 * https://github.com/koga73/OOP
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -78,9 +78,10 @@ var OOP = function(){
 		//Adds a _super property to the object
 		//Adds an _interface property to the object
 		//'Simple' param will prevent adding _type, _super, _interface
-		createClass:function(instance, static, events, simple){
+		createClass:function(instance, static, events, staticEvents, simple){
 			static = static || null;
 			events = events === true;
+			staticEvents = staticEvents === true;
 			simple = simple === true;
 
 			var caller = null;
@@ -91,37 +92,43 @@ var OOP = function(){
 			var _class = function(){
 				var _super = _class._super || null;
 				if (_methods.isFunction(_super)){
-					_super = new _class._super();
-					if (!simple){
-						_super._interface = this;
-					}
+					_super = _class._super.apply({}, arguments);
 				}
 
 				//To array
-				var args = Array.prototype.slice.call(arguments);
+				var objArgs = Array.prototype.slice.call(arguments).filter(function(arg){
+					return _methods.isObject(arg);
+				});
+				var constructorArgs = Array.prototype.slice.call(arguments).filter(function(arg){
+					return !_methods.isObject(arg);
+				});
+				var _instance = instance;
 				var _public = this;
 				var _private = {};
 
 				//Closure
-				var isClosure = _methods.isFunction(instance);
+				var isClosure = _methods.isFunction(_instance);
 				if (isClosure){
-					instance = instance(_private, _public); //Pass references, _private first because _public is essentially "this"
+					_instance = _instance(_private, _public); //Pass references, _private first because _public is essentially "this"
 				}
 
 				if (isClosure){
 					//Extend super to instance
-					var _instance = _methods.extend(_instance, false, _super, true, instance);
+					_instance = _methods.extend(_instance, false, _super, true, _instance);
 					//Extend public members to new object (public does not start with '_') and apply args
-					_public = _methods.extend.apply(this, [_public, false, /^[^_]/, _instance].concat(args));
+					_public = _methods.extend.apply(this, [_public, false, /^[^_]/, _instance].concat(objArgs));
 					//Extend private members to new object (public starts with '_')
 					_private = _methods.extend(_private, false, /^_/, _instance);
 				} else {
-					_public = _methods.extend.apply(this, [_public, false, _super, true, instance].concat(args));
+					_public = _methods.extend.apply(this, [_public, false, _super, true, _instance].concat(objArgs));
 				}
 
 				if (!simple){
 					_public._type = _class._type; //Copy type
 					_public._super = _super;
+					if (!simple && _super){
+						_super._interface = _public;
+					}
 					_public._interface = _public; //So you don't need to create a var _this and for inheritance
 				}
 
@@ -130,10 +137,21 @@ var OOP = function(){
 					_methods.addEvents(_public);
 				}
 
+				//Constructor
+				if (_public.__construct){
+					_public.__construct.apply(this, constructorArgs);
+				}
+				if (_private.__construct){
+					_private.__construct.apply(this, constructorArgs);
+				}
+
 				return _public;
 			};
 			if (static) {
 				_methods.extend(_class, static);
+				if (staticEvents){
+					_methods.addEvents(_class);
+				}
 			}
 			return _class;
 		},
@@ -142,8 +160,9 @@ var OOP = function(){
 			var instance = options.instance;
 			var static = options.static;
 			var events = options.events;
+			var staticEvents = options.staticEvents;
 			var simple = options.simple;
-			return _methods.createClass(instance, static, events, simple);
+			return _methods.createClass(instance, static, events, staticEvents, simple);
 		},
 
 		//Adds super property on class object
@@ -320,8 +339,8 @@ var OOP = function(){
 					event = {};
 				}
 			}
-			event._type = type;
-			event._data = data;
+			event.obj2dRef = type;
+			event.data = data;
 			return event;
 		},
 
@@ -521,9 +540,9 @@ var OOP = function(){
 			} else if (obj.fireEvent){ //IE
 				obj.fireEvent("on" + type, event);
 			} else if (typeof jQuery !== typeof undefined){
-				jQuery(obj).trigger(jQuery.Event(event._type, {
-					_type:event._type,
-					_data:event._data
+				jQuery(obj).trigger(jQuery.Event(event.type, {
+					type:event.type,
+					data:event.data
 				}));
 			} else { //Custom
 				obj.dispatchEvent = _methods._dispatchEvent;
@@ -538,13 +557,13 @@ var OOP = function(){
 
 		//Dispatches an event to handler references
 		_dispatchEventHandlers: function(obj, event){
-			var eventHandlers = obj._eventHandlers[event._type];
+			var eventHandlers = obj._eventHandlers[event.type];
 			if (!eventHandlers){
 				return;
 			}
 			var eventHandlersLen = eventHandlers.length;
 			for (var i = 0; i < eventHandlersLen; i++){
-				eventHandlers[i](event, event._data);
+				eventHandlers[i](event, event.data);
 			}
 		}
 

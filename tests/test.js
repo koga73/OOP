@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+//This file contains unit tests for NodeJS
+
 const expect = require('chai').expect;
 
 const OOP = require("../index");

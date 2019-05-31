@@ -99,14 +99,15 @@ OOP.namespace("foo.bar.Triangle", OOP.inherit(foo.bar.Shape, OOP.construct({
 	}
 })));
 
-var instance = new foo.bar.Triangle();
-console.log(OOP.isType(instance, foo.bar.Triangle)); //true
-console.log(OOP.isType(instance, foo.bar.Shape)); //true
-console.log(OOP._interface); //Triangle instance
-console.log(OOP._super); //Shape instance
-console.log(OOP._super._interface); //Triangle instance
-console.log(OOP._type); //"foo.bar.Triangle"
-console.log(OOP._super._type); //"foo.bar.Shape"
+var triangle = new foo.bar.Triangle();
+console.log(OOP.isType(triangle, foo.bar.Triangle)); //true
+console.log(OOP.isType(triangle, "foo.bar.Triangle")); //true
+console.log(OOP.isType(triangle, foo.bar.Shape)); //true
+console.log(triangle._interface); //Triangle instance
+console.log(triangle._super); //Shape instance
+console.log(triangle._super._interface); //Triangle instance
+console.log(triangle._type); //"foo.bar.Triangle"
+console.log(triangle._super._type); //"foo.bar.Shape"
 ```
 
 ## Events:

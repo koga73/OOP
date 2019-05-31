@@ -24,14 +24,15 @@ var OOP = function(){
 	var _instance = null;
 
 	//For Node
+	var _window = (typeof window !== typeof undefined) ? window : null;
 	var _global = (typeof global !== typeof undefined) ? global : null;
-	var window = window || _global || {};
+	var _defaultObj = _window || _global || null;
 	
 	var _methods = {
-		//Adds OOP methods to an obj (such as window by default)
+		//Adds OOP methods to an obj (such as window/global by default)
 		//Not required to be called. You can just use OOP without calling this
 		init:function(obj){
-			obj = obj || window;
+			obj = obj || _defaultObj;
 
 			var tmp = {};
 			_methods.extend(tmp, false, _instance);
@@ -50,11 +51,11 @@ var OOP = function(){
 
 		//Namespaces an object or function
 		//Adds a _type property to the obj equal to the namespace
-		//Start obj defaults to the window
+		//Start obj defaults to the window/global
 		namespace:function(namespace, obj, startObj){
 			var objs = namespace.split(".");
 			var objsLen = objs.length;
-			var node = startObj || window;
+			var node = startObj || _defaultObj;
 			for (var i = 0; i < objsLen; i++){
 				var objName = objs[i];
 				if (i == objsLen - 1){
@@ -395,7 +396,7 @@ var OOP = function(){
 					obj.addEventListener(type, handler);
 				} else if (obj.attachEvent){ //IE
 					var attachHandler = function(){
-						handler(window.event);
+						handler(_defaultObj.event);
 					};
 					attachHandler.handler = handler; //Store reference to original handler
 					attachHandler = _methods._addEventHandler(obj, type, attachHandler);

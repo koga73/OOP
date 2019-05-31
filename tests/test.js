@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-const OOP = require("./index");
+const OOP = require("../index");
 //Optional - This adds the OOP methods into the global namespace
 //If you don't do this then you will need to add "OOP" infront of methods such as "OOP.namespace" instead of just "namespace"
 OOP.init();
@@ -66,7 +66,7 @@ describe("--- EXTEND ---\n", function(){
 
 	//Tests
 	it("should deep extend bar onto foo meaning foo.def will not equal bar.def", function(){
-		console.log("foo:", foo);
+		console.log("foo:", {abc:123});
 		console.log("bar:", bar);
 		console.log("deepFooBar:", deepFooBar);
 
@@ -74,7 +74,7 @@ describe("--- EXTEND ---\n", function(){
 	});
 	it("should shallow extend bar onto foo meaning foo.def and bar.def will be the same reference", function(){
 		console.log();
-		console.log("foo:", foo);
+		console.log("foo:", {abc:123});
 		console.log("bar:", bar);
 		console.log("shallowFooBar:", shallowFooBar);
 
@@ -82,7 +82,7 @@ describe("--- EXTEND ---\n", function(){
 	});
 	it("should shallow extend bar onto foo meaning foo.def and bar.def will be the same reference but the third object is deep again", function(){
 		console.log();
-		console.log("foo:", foo);
+		console.log("foo:", {abc:123});
 		console.log("bar:", bar);
 		console.log("thirdFooBar:", thirdFooBar);
 

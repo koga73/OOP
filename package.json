@@ -4,7 +4,7 @@
   "description": "This project when combined with design patterns adds common OOP functionality to JavaScript",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha tests/test.js"
   },
   "repository": {
     "type": "git",

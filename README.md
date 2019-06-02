@@ -131,7 +131,7 @@ var defaultShape = new foo.bar.Shape();
 console.log(defaultShape);
 ```
 
-##### OOP.changeScope
+### Change scope:
 This allows you to change the scope of OOP methods so don't have to put "OOP" all over the place.
 ``` javascript
 //Add OOP methods to window/global by default or to any object passed in
@@ -165,7 +165,7 @@ var defaultShape = new foo.bar.Shape();
 console.log(defaultShape);
 ```
 
-### Static
+### Static:
 ``` javascript
 OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{

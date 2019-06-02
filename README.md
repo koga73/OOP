@@ -165,10 +165,10 @@ OOP.namespace("foo.bar.Shape", OOP.construct({
 
 //Note that if we pass in non-object parameters they will get sent to the constructor
 //Object type parameters will apply value overrides to the instance
-var defaultShape = new foo.bar.Shape(300, 400, {
-	test:"this prop gets added to the class because its in an object"
+var customShape = new foo.bar.Shape(300, 400, {
+	test:"this prop gets added to the instance"
 });
-console.log(defaultShape);
+console.log(customShape);
 ```
 
 ### Static:

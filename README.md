@@ -28,7 +28,7 @@ npm test
 tests/test.html
 ```
 
-## [examples/pong](example-pong/examples/pong/js) snippet:
+## [examples/pong](examples/pong/js) snippet:
 ``` javascript
 (function(){
 	//Imports from Pong example

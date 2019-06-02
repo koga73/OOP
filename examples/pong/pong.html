@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Pong</title>
+
+		<meta charset="utf-8"/>
+
+		<link href="css/pong.css" rel="stylesheet" type="text/css"/>
+	</head>
+	<body>
+		<div id="board">
+			<div id="score1"></div>
+			<div id="paddle1"></div>
+
+			<div id="ball"></div>
+			
+			<div id="score2"></div>
+			<div id="paddle2"></div>
+		</div>
+
+		<script src="../../dist/OOP.js"></script>
+		<script>
+			//Optional - This adds the OOP methods into the window namespace
+			//If you don't do this then you will need to add "OOP" infront of methods such as "OOP.namespace" instead of just "namespace"
+			OOP.changeScope();
+
+			alert("Player 1 use keys w/s | Player 2 use arrow up/down");
+		</script>
+
+		<!-- Note that this pong game requires IE9+ however oop.js does support IE8 -->
+		<script src="js/utils/normal-timer.js"></script>
+		<script src="js/utils/message-queue.js"></script>
+		<script src="js/models/object-2d.js"></script>
+		<script src="js/models/paddle.js"></script>
+		<script src="js/models/score.js"></script>
+		<script src="js/renderers/dom-renderer.js"></script>
+		<script src="js/managers/input-manager.js"></script>
+		<script src="js/pong.js"></script>
+	</body>
+</html>

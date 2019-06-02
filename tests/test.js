@@ -7,7 +7,7 @@ const expect = require('chai').expect;
 const OOP = require("../index");
 //Optional - This adds the OOP methods into the global namespace
 //If you don't do this then you will need to add "OOP" infront of methods such as "OOP.namespace" instead of just "namespace"
-OOP.init();
+OOP.changeScope();
 
 describe("--- CLONE ---\n", function(){
 
@@ -98,7 +98,7 @@ describe("--- EXTEND ---\n", function(){
 describe("--- TYPE CHECKS ---\n", function(){
 	//Tests
 	it("should check isFunction", function(){
-		expect(isFunction(()=>{})).equal(true);
+		expect(isFunction(function(){})).equal(true);
 		expect(isFunction([])).equal(false);
 	});
 	it("should check isArray", function(){
@@ -180,6 +180,53 @@ describe("--- SIMPLE CLASS ---\n", function(){
 	});
 });
 
+describe("--- PUBLIC / PRIVATE SCOPE ---\n", function(){
+
+	//Create namespaced class with instance and static methods
+	namespace("foo.bar.Shape", construct({
+		instance:function(_private, _public){
+			return {
+				width:100,
+				height:200,
+
+				_moveX:10,
+				_moveY:20,
+
+				__construct:function(moveX, moveY){
+					_private._moveX = moveX;
+					_private._moveY = moveY;
+				},
+
+				getMoveX:function(){
+					return _private._moveX;
+				},
+
+				getMoveY:function(){
+					return _private._moveY;
+				}
+			};
+		}
+	}));
+
+	//Create instance using defaults
+	var defaultShape = new foo.bar.Shape(30, 40, {
+		test:"test"
+	});
+	
+	//Tests
+	it("should segment public / private scopes based on names starting with an underscore", function(){
+		console.log("Default shape:", defaultShape);
+
+		expect(defaultShape.width).equal(100);
+		expect(defaultShape.height).equal(200);
+		expect(defaultShape._moveX).equal(undefined);
+		expect(defaultShape._moveY).equal(undefined);
+		expect(defaultShape.getMoveX()).equal(30);
+		expect(defaultShape.getMoveY()).equal(40);
+		expect(defaultShape.test).equal("test");
+	});
+});
+
 describe("--- INHERITANCE ---\n", function(){
 
 	//Create namespaced class with instance and static methods
@@ -227,7 +274,6 @@ describe("--- INHERITANCE ---\n", function(){
 		expect(triangle._super._type).equal("foo.bar.Shape");
 		expect(triangle._super._interface).equal(triangle);
 		
-		expect(triangle.width).not.equal(triangle._super.width);
 		expect(triangle.height).equal(triangle._super.height);
 		expect(triangleArea).equal(30000);
 		expect(shapeAreaDefault).equal(60000);

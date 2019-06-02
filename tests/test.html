@@ -20,8 +20,9 @@
 			//OOP.init();
 		</script>
 
-		<!-- --- CLONE --- -->
+		<!-- CLONE -->
 		<script>
+			console.log("\n");
 			console.log("--- CLONE ---\n");
 
 			var srcObj = {
@@ -43,14 +44,15 @@
 				console.assert(srcObj.foo != deepClone.foo, "should create a deep clone of srcObj where the foo reference is unique");
 
 			//should create a shallow clone of srcObj where the foo reference is shared
-				console.log();
+				console.log("\n");
 				console.log("srcObj:", srcObj);
 				console.log("shallowClone:", shallowClone);
 				console.assert(srcObj.foo == shallowClone.foo, "should create a shallow clone of srcObj where the foo reference is shared");
 		</script>
 
-		<!-- --- EXTEND --- -->
+		<!-- EXTEND -->
 		<script>
+			console.log("\n");
 			console.log("--- EXTEND ---\n");
 
 			/*
@@ -88,14 +90,14 @@
 				console.assert(deepFooBar.def != bar.def, "should deep extend bar onto foo meaning foo.def will not equal bar.def");
 
 			//should shallow extend bar onto foo meaning foo.def and bar.def will be the same reference
-				console.log();
+				console.log("\n");
 				console.log("foo:", {abc:123});
 				console.log("bar:", bar);
 				console.log("shallowFooBar:", shallowFooBar);
 				console.assert(shallowFooBar.def == bar.def, "should shallow extend bar onto foo meaning foo.def and bar.def will be the same reference");
 
 			//should shallow extend bar onto foo meaning foo.def and bar.def will be the same reference but the third object is deep again
-				console.log();
+				console.log("\n");
 				console.log("foo:", {abc:123});
 				console.log("bar:", bar);
 				console.log("thirdFooBar:", thirdFooBar);
@@ -103,13 +105,14 @@
 				console.assert(thirdFooBar.jkl != third.jkl, "should shallow extend bar onto foo meaning foo.def and bar.def will be the same reference but the third object is deep again");
 		</script>
 
-		<!-- --- TYPE CHECKS --- -->
+		<!-- TYPE CHECKS -->
 		<script>
+			console.log("\n");
 			console.log("--- TYPE CHECKS ---\n");
 
 			//Tests
 			//should check isFunction
-				console.assert(OOP.isFunction(()=>{}) == true, "should check isFunction");
+				console.assert(OOP.isFunction(function(){}) == true, "should check isFunction");
 				console.assert(OOP.isFunction([]) == false, "should check isFunction");
 
 			//should check isArray
@@ -134,8 +137,9 @@
 				console.assert(OOP.isRegExp({}) == false, "should check isRegExp");
 		</script>
 
-		<!-- --- SIMPLE CLASS --- -->
+		<!-- SIMPLE CLASS -->
 		<script>
+			console.log("\n");
 			console.log("--- SIMPLE CLASS ---\n");
 
 			//Create namespaced class with instance and static methods
@@ -181,7 +185,7 @@
 				console.assert(defaultShape._type == "foo.bar.Shape", "should create a default foo.bar.Shape class with width and height attributes");
 			
 			//should create a custom foo.bar.Shape class with width and height parameters
-				console.log();
+				console.log("\n");
 				console.log("Custom shape:", customShape);
 
 				console.assert(customShape.width == 300, "should create a custom foo.bar.Shape class with width and height parameters");
@@ -191,8 +195,58 @@
 				console.assert(defaultShape.position != customShape.position, "should create a custom foo.bar.Shape class with width and height parameters");
 		</script>
 
-		<!-- --- INHERITANCE --- -->
+		<!-- PUBLIC / PRIVATE SCOPE -->
 		<script>
+			console.log("\n");
+			console.log("--- PUBLIC / PRIVATE SCOPE ---\n");
+
+			//Create namespaced class with instance and static methods
+			OOP.namespace("foo.bar.Shape", OOP.construct({
+				instance:function(_private, _public){
+					return {
+						width:100,
+						height:200,
+
+						_moveX:10,
+						_moveY:20,
+
+						__construct:function(moveX, moveY){
+							_private._moveX = moveX;
+							_private._moveY = moveY;
+						},
+
+						getMoveX:function(){
+							return _private._moveX;
+						},
+
+						getMoveY:function(){
+							return _private._moveY;
+						}
+					};
+				}
+			}));
+
+			//Create instance using defaults
+			var defaultShape = new foo.bar.Shape(30, 40, {
+				test:"test"
+			});
+
+			//Tests
+			//should segment public / private scopes based on names starting with an underscore
+				console.log("Default shape:", defaultShape);
+
+				console.assert(defaultShape.width == 100, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape.height == 200, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape._moveX == undefined, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape._moveY == undefined, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape.getMoveX() == 30, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape.getMoveY() == 40, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape.test == "test", "should segment public / private scopes based on names starting with an underscore");
+		</script>
+
+		<!-- INHERITANCE -->
+		<script>
+			console.log("\n");
 			console.log("--- INHERITANCE ---\n");
 
 			//Create namespaced class with instance and static methods
@@ -240,14 +294,14 @@
 				console.assert(triangle._super._type == "foo.bar.Shape", "should create an inherited foo.bar.Triangle class");
 				console.assert(triangle._super._interface == triangle, "should create an inherited foo.bar.Triangle class");
 				
-				console.assert(triangle.width != triangle._super.width, "should create an inherited foo.bar.Triangle class");
 				console.assert(triangle.height == triangle._super.height, "should create an inherited foo.bar.Triangle class");
 				console.assert(triangleArea == 30000, "should create an inherited foo.bar.Triangle class");
 				console.assert(shapeAreaDefault == 60000, "should create an inherited foo.bar.Triangle class");
 		</script>
 
-		<!-- --- EVENTS --- -->
+		<!-- EVENTS -->
 		<script>
+			console.log("\n");
 			console.log("--- EVENTS ---\n");
 
 			//Encapsulate class declaration since we only want the "static" variable accessible to the class
@@ -286,27 +340,36 @@
 			//Tests
 			//should create a default foo.bar.Shape class and fire an event
 				//In case event never fires setTimeout
+				var eventTimeout1 = setTimeout(function(){
+					clearTimeout(eventTimeout1);
+					console.assert(false, "should create a default foo.bar.Shape class and fire an event");
+				}, 1000);
 				
 				defaultShape.addEventListener(foo.bar.Shape.EVENT_TEST, function(evt, data){
 					console.log("Got event:", evt, data);
-					
+					clearTimeout(eventTimeout1);
 					console.assert(data == 123, "should create a default foo.bar.Shape class and fire an event");
 				});
 				defaultShape.fireTestEvent();
 				
 			//should add events to a normal object
-				console.log();
+				console.log("\n");
 				//In case event never fires setTimeout
+				var eventTimeout2 = setTimeout(function(){
+					clearTimeout(eventTimeout2);
+					console.assert(false, "should add events to a normal object");
+				}, 1000);
 				
 				myObj.addEventListener("event_test", function(evt, data){
 					console.log("Got event:", evt, data);
-					
+					clearTimeout(eventTimeout2);
 					console.assert(data == 456, "should add events to a normal object");
 				});
 				myObj.dispatchEvent(new OOP.Event("event_test", 456));
 		</script>
 
 		<script>
+			console.log("\n");
 			console.info("IF YOU DON'T SEE ANY ASSERTION ERRORS THEN THE TESTS PASSED!");
 		</script>
 	</body>

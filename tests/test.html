@@ -195,6 +195,55 @@
 				console.assert(defaultShape.position != customShape.position, "should create a custom foo.bar.Shape class with width and height parameters");
 		</script>
 
+		<!-- PUBLIC / PRIVATE SCOPE -->
+		<script>
+			console.log("\n");
+			console.log("--- PUBLIC / PRIVATE SCOPE ---\n");
+
+			//Create namespaced class with instance and static methods
+			OOP.namespace("foo.bar.Shape", OOP.construct({
+				instance:function(_private, _public){
+					return {
+						width:100,
+						height:200,
+
+						_moveX:10,
+						_moveY:20,
+
+						__construct:function(moveX, moveY){
+							_private._moveX = moveX;
+							_private._moveY = moveY;
+						},
+
+						getMoveX:function(){
+							return _private._moveX;
+						},
+
+						getMoveY:function(){
+							return _private._moveY;
+						}
+					};
+				}
+			}));
+
+			//Create instance using defaults
+			var defaultShape = new foo.bar.Shape(30, 40, {
+				test:"test"
+			});
+
+			//Tests
+			//should segment public / private scopes based on names starting with an underscore
+				console.log("Default shape:", defaultShape);
+
+				console.assert(defaultShape.width == 100, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape.height == 200, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape._moveX == undefined, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape._moveY == undefined, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape.getMoveX() == 30, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape.getMoveY() == 40, "should segment public / private scopes based on names starting with an underscore");
+				console.assert(defaultShape.test == "test", "should segment public / private scopes based on names starting with an underscore");
+		</script>
+
 		<!-- INHERITANCE -->
 		<script>
 			console.log("\n");

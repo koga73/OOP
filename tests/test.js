@@ -180,6 +180,53 @@ describe("--- SIMPLE CLASS ---\n", function(){
 	});
 });
 
+describe("--- PUBLIC / PRIVATE SCOPE ---\n", function(){
+
+	//Create namespaced class with instance and static methods
+	namespace("foo.bar.Shape", construct({
+		instance:function(_private, _public){
+			return {
+				width:100,
+				height:200,
+
+				_moveX:10,
+				_moveY:20,
+
+				__construct:function(moveX, moveY){
+					_private._moveX = moveX;
+					_private._moveY = moveY;
+				},
+
+				getMoveX:function(){
+					return _private._moveX;
+				},
+
+				getMoveY:function(){
+					return _private._moveY;
+				}
+			};
+		}
+	}));
+
+	//Create instance using defaults
+	var defaultShape = new foo.bar.Shape(30, 40, {
+		test:"test"
+	});
+	
+	//Tests
+	it("should segment public / private scopes based on names starting with an underscore", function(){
+		console.log("Default shape:", defaultShape);
+
+		expect(defaultShape.width).equal(100);
+		expect(defaultShape.height).equal(200);
+		expect(defaultShape._moveX).equal(undefined);
+		expect(defaultShape._moveY).equal(undefined);
+		expect(defaultShape.getMoveX()).equal(30);
+		expect(defaultShape.getMoveY()).equal(40);
+		expect(defaultShape.test).equal("test");
+	});
+});
+
 describe("--- INHERITANCE ---\n", function(){
 
 	//Create namespaced class with instance and static methods

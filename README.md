@@ -131,10 +131,12 @@ var defaultShape = new foo.bar.Shape();
 console.log(defaultShape);
 ```
 
-Optionally you can add the OOP methods onto the window or any object.
-This will allow you to exclude "OOP" in the examples. Same example as above:
+##### OOP.changeScope
+This allows you to change the scope of OOP methods so don't have to put "OOP" all over the place.
 ``` javascript
-OOP.init(); //Add OOP methods to the window or to any object passed in
+//Add OOP methods to window/global by default or to any object passed in
+OOP.changeScope();
+
 namespace("foo.bar.Shape", construct({
 	instance:{
 		width:100,
@@ -154,7 +156,7 @@ OOP.namespace("foo.bar.Shape", OOP.construct({
 		height:200,
 
 		_construct:function(){
-			console.log("This gets called when a new instance is created");
+			console.log("This gets called when a new instance is created", this.width, this.height);
 		}
 	}
 }));
@@ -163,7 +165,7 @@ var defaultShape = new foo.bar.Shape();
 console.log(defaultShape);
 ```
 
-### Add static methods and pass parameters to the instance:
+### Static
 ``` javascript
 OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
@@ -172,6 +174,8 @@ OOP.namespace("foo.bar.Shape", OOP.construct({
 	},
 
 	static:{
+		SOME_CONST:123,
+
 		getArea:function(obj){
 			return obj.width * obj.height;
 		}
@@ -182,6 +186,7 @@ var instance = new foo.bar.Shape({
 	width:300,
 	height:400
 });
+console.log(foo.bar.Shape.SOME_CONST);
 console.log(foo.bar.Shape.getArea(instance));
 ```
 

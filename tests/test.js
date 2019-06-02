@@ -7,7 +7,7 @@ const expect = require('chai').expect;
 const OOP = require("../index");
 //Optional - This adds the OOP methods into the global namespace
 //If you don't do this then you will need to add "OOP" infront of methods such as "OOP.namespace" instead of just "namespace"
-OOP.init();
+OOP.changeScope();
 
 describe("--- CLONE ---\n", function(){
 

@@ -31,7 +31,7 @@ var OOP = function(){
 	var _methods = {
 		//Adds OOP methods to an obj (such as window/global by default)
 		//Not required to be called. You can just use OOP without calling this
-		init:function(obj){
+		changeScope:function(obj){
 			obj = obj || _defaultObj;
 
 			var tmp = {};
@@ -590,7 +590,7 @@ var OOP = function(){
 
 	//Public API
 	_instance = {
-		init:_methods.init,
+		changeScope:_methods.changeScope,
 
 		//Class
 		namespace:_methods.namespace,

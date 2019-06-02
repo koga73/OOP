@@ -1,6 +1,6 @@
 {
   "name": "@koga73/oop",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "This project when combined with design patterns adds common OOP functionality to JavaScript",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,7 @@
     "url": "https://github.com/koga73/OOP/issues"
   },
   "homepage": "https://github.com/koga73/OOP#readme",
-  "dependencies": {
+  "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.1.4"
   }

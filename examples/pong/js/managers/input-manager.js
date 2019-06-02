@@ -1,8 +1,8 @@
 (function(){
-	const MessageQueue = Pong.Utils.MessageQueue;
+	var MessageQueue = Pong.Utils.MessageQueue;
 
 	//This returns a reference to the class. We are using the word "_class" as a shortcut to easily access static members 
-	const _class = namespace("Pong.Managers.InputManager", construct({
+	var _class = namespace("Pong.Managers.InputManager", construct({
 		static:{
 			KEY_CODE_W:87,
 			KEY_CODE_S:83,
@@ -10,7 +10,6 @@
 			KEY_CODE_ARROW_DOWN:40,
 
 			singleton:null,
-
 			getSingleton:function(){
 				if (!_class.singleton){
 					//Pass in array since we want it to go to __constructor
@@ -39,19 +38,11 @@
 				player2Down:false,
 
 				__construct:function(){
-					this.init();
+					//Normally you could use document.addEventListener but it isn't supported by IE8 thus we use OOP.addEventListener instead
+					OOP.addEventListener(document, "keydown", _private._handler_key_down);
+					OOP.addEventListener(document, "keyup", _private._handler_key_up);
 				},
 
-				init:function(){
-					document.addEventListener("keydown", _private._handler_key_down);
-					document.addEventListener("keyup", _private._handler_key_up);
-				},
-
-				destroy:function(){
-					document.removeEventListener("keydown", _private._handler_key_down);
-					document.removeEventListener("keyup", _private._handler_key_up);
-				},
-				
 				_handler_key_down:function(evt){
 					switch (evt.keyCode){
 						case _public.player1Controls[0]:

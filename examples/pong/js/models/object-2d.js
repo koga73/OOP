@@ -37,6 +37,7 @@
 					}
 					return value;
 				} catch (err){
+					console.warn(err.message);
 					return 0;
 				}
 			}

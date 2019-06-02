@@ -98,7 +98,7 @@ describe("--- EXTEND ---\n", function(){
 describe("--- TYPE CHECKS ---\n", function(){
 	//Tests
 	it("should check isFunction", function(){
-		expect(isFunction(()=>{})).equal(true);
+		expect(isFunction(function(){})).equal(true);
 		expect(isFunction([])).equal(false);
 	});
 	it("should check isArray", function(){

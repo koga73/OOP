@@ -1,12 +1,16 @@
+//Encapsulate class to not pollute window namespace
 (function(){
-	const Models = Pong.Models;
-	const DomRenderer = Pong.Renderers.DomRenderer;
-	const InputManager = Pong.Managers.InputManager;
-	const NormalTimer = Pong.Utils.NormalTimer;
-	const MessageQueue = Pong.Utils.MessageQueue;
+	//Imports
+	//"var" can be replaced with "const" - kept as "var" for IE support
+	var Models = Pong.Models;
+	var DomRenderer = Pong.Renderers.DomRenderer;
+	var InputManager = Pong.Managers.InputManager;
+	var NormalTimer = Pong.Utils.NormalTimer;
+	var MessageQueue = Pong.Utils.MessageQueue;
 	
-	//This returns a reference to the class. We are using the word "_class" as a shortcut to easily access static members 
-	const _class = namespace("Pong", construct({
+	//This returns a reference to the class. We are using the word "_class" as a shortcut to easily access static members
+	var _class = namespace("Pong", construct({
+		//Constants
 		static:{
 			ID_BOARD:"board",
 			ID_SCORE1:"score1",
@@ -21,7 +25,6 @@
 			PADDLE_ENERGY_FACTOR:0.15, //The amount of energy transfered from the paddle to the ball
 
 			singleton:null,
-
 			getSingleton:function(){
 				if (!_class.singleton){
 					//Pass in array since we want it to go to __constructor
@@ -39,8 +42,10 @@
 			}
 		},
 
-		//In general _public is optional since it's the same as "this"
-		//However _public is useful if "this" scope is not correct you can use "_public" instead of creating a delegate
+		//In general _public is optional since it's the same as "this" (except in the scope of a private method)
+		//_public is useful if "this" has changed you can use "_public" instead of creating a delegate
+		//_public must be used in the scope of private methods since "this" points to the private instance
+		//Properties and methods starting with an underscore '_' are private
 		instance:function(_private, _public){
 			return {
 				board:null,
@@ -75,7 +80,6 @@
 					//Init renderer
 					_private._renderer = new DomRenderer();
 					_private._renderQueue = [
-						this.board,
 						this.paddle1,
 						this.ball,
 						this.paddle2

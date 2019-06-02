@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/koga73/OOP.svg?branch=master)](https://travis-ci.org/koga73/OOP)
+[![Support: IE8+](https://img.shields.io/badge/support-ie8%2B-brightgreen.svg)]()
+[![Dependencies: None](https://img.shields.io/badge/dependencies-none-lightgrey.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/koga73/OOP/blob/master/LICENSE.md)
 
 # OOP
@@ -6,10 +8,10 @@
 This project when combined with design patterns adds common OOP functionality to JavaScript
 
 Goals:
-- Provide OOP like functionality including namespacing, classes, inheritance
+- Provide OOP like functionality including namespacing, classes, inheritance, public/private scope
+- Provide a cross-browser event model that can be added to any object
 - Provide methods for cloning and extending objects
-- Provide a cross-browser event model that can be added onto to any object
-- Provide common methods for type checking
+- Provide methods for type checking
 
 ## Install:
 ``` bash
@@ -17,8 +19,101 @@ npm i @koga73/oop
 ```
 
 ### Run unit tests:
+##### Run NodeJS unit test:
 ``` bash
 npm test
+```
+##### Run HTML/JS unit test:
+```
+tests/test.html
+```
+
+## For implementation example see *examples/pong*
+``` javascript
+(function(){
+	//Imports from Pong example
+	var Models = Pong.Models;
+	var DomRenderer = Pong.Renderers.DomRenderer;
+	var InputManager = Pong.Managers.InputManager;
+	var NormalTimer = Pong.Utils.NormalTimer;
+	
+	//This returns a reference to the class. We are using the word "_class" as a shortcut to easily access static members
+	var _class = namespace("Foo.Bar.Pong", construct({
+		//Constants
+		static:{
+			ID_BALL:"ball",
+			SPEED_BALL:400, //Pixels-per-second
+			
+			singleton:null,
+			getSingleton:function(){
+				if (!_class.singleton){
+					_class.singleton = new Foo.Bar.Pong(
+						_class.ID_BALL
+					);
+				}
+				return _class.singleton;
+			}
+		},
+
+		//In general _public is optional since it's the same as "this" (except in the scope of a private method)
+		//Properties and methods starting with an underscore '_' are private
+		instance:function(_private, _public){
+			return {
+				ball:null,
+
+				normalTimer:null,
+				inputManager:null,
+
+				_renderer:null,
+				_renderQueue:[],
+
+				__construct:function(ballId){
+					//Init game objects
+					this.ball = new Models.Object2D(ballId);
+
+					//Init game timer
+					this.normalTimer = new NormalTimer({
+						paused:false,
+						onTick:_private._onTick
+					});
+					this.inputManager = InputManager.getSingleton();
+
+					//Init renderer
+					_private._renderer = new DomRenderer();
+					_private._renderQueue = [
+						this.ball
+					];
+
+					//--- LISTEN FOR EVENTS ---
+
+					//Start
+					this.resetBall();
+				},
+
+				//Delta is the time elapsed between ticks
+				//Multiplying a movement value by delta makes the movement timebased rather than based on the clock cycle
+				_onTick:function(delta){
+					//Move
+					var queueLen = _private._renderQueue.length;
+					for (var i = 0; i < queueLen; i++){
+						var obj2d = _private._renderQueue[i];
+						obj2d.x += obj2d.moveX * delta;
+						obj2d.y += obj2d.moveY * delta;
+					}
+					
+					//--- DO LOGIC ---
+
+					//Render
+					_private._renderer.render(_private._renderQueue);
+				},
+
+				resetBall:function(){
+					//--- DO LOGIC ---
+				}
+			};
+		}
+	}));
+})();
 ```
 
 ## Simple class:
@@ -109,6 +204,23 @@ console.log(triangle._super._interface); //Triangle instance
 console.log(triangle._type); //"foo.bar.Triangle"
 console.log(triangle._super._type); //"foo.bar.Shape"
 ```
+
+## Public/Private scope:
+``` javascript
+OOP.namespace("foo.bar.Shape", OOP.construct({
+	instance:function(_private, _public){
+		return {
+			width:100,
+			height:200
+			_thisIsPrivate:"some message"
+		};
+	}
+}));
+
+var defaultShape = new foo.bar.Shape();
+console.log(defaultShape);
+```
+Note that when a function is passed to "instance" a public and private scope is created. Anything starting with an underscore '_' is private. You can use the _private and _public references passed into the function to call between scopes. Optionally "this" refers to the _public or _private scope respectively. You can also use these _public and _private variables to avoid creating event delegates for "this".
 
 ## Events:
 ``` javascript

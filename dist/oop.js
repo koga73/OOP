@@ -95,13 +95,20 @@ var OOP = function(){
 					_super = _class._super.apply({}, arguments);
 				}
 
-				//To array
-				var objArgs = Array.prototype.slice.call(arguments).filter(function(arg){
-					return _methods.isObject(arg);
-				});
-				var constructorArgs = Array.prototype.slice.call(arguments).filter(function(arg){
-					return !_methods.isObject(arg);
-				});
+				//To arrays
+				var objArgs = [];
+				var constructorArgs = [];
+				var argsArr = Array.prototype.slice.call(arguments);
+				var argsArrLen = argsArr.length;
+				for (var i = 0; i < argsArrLen; i++){
+					var arg = argsArr[i];
+					if (_methods.isObject(arg)){
+						objArgs.push(arg);
+					} else {
+						constructorArgs.push(arg);
+					}
+				}
+
 				var _instance = instance;
 				var _public = this;
 				var _private = {};
@@ -207,9 +214,12 @@ var OOP = function(){
 					return clone;
 				case (_methods.isArray(obj)):
 					if (deep){
-						return obj.map(function(obj){
-							return _methods.clone(obj, deep);
-						});
+						var arr = [];
+						var objLen = obj.length;
+						for (var i = 0; i < objLen; i++){
+							arr.push(_methods.clone(obj[i], deep));
+						}
+						return arr;
 					} else {
 						return obj.concat();
 					}
@@ -299,7 +309,7 @@ var OOP = function(){
 		},
 
 		isArray:function(arr){
-			return Array.isArray(arr);
+			return arr && Object.prototype.toString.call(arr) === "[object Array]";
 		},
 
 		isObject:function(obj){
@@ -339,7 +349,7 @@ var OOP = function(){
 					event = {};
 				}
 			}
-			event.obj2dRef = type;
+			event.type = type;
 			event.data = data;
 			return event;
 		},
@@ -403,6 +413,10 @@ var OOP = function(){
 		//Safe cross-browser way to listen for one or more events
 		//Pass obj, comma or whitespace delimeted event types, and a handler
 		addEventListener:function(obj, types, handler){
+			//For some reason IE8 in compatibility mode calls addEventListener
+			if (_methods.isString(obj)){
+				return;
+			}
 			if (!obj._eventHandlers){
 				obj._eventHandlers = {};
 			}
@@ -458,6 +472,10 @@ var OOP = function(){
 		//Pass obj, comma or whitespace delimeted event types, and optionally handler
 		//If no handler is passed all handlers for each event type will be removed
 		removeEventListener:function(obj, types, handler){
+			//For some reason IE8 in compatibility mode calls addEventListener
+			if (_methods.isString(obj)){
+				return;
+			}
 			if (!obj._eventHandlers){
 				obj._eventHandlers = {};
 			}

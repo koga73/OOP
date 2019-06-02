@@ -28,7 +28,7 @@ npm test
 tests/test.html
 ```
 
-## *examples/pong* snippet:
+## [examples/pong](example-pong/examples/pong/js) snippet:
 ``` javascript
 (function(){
 	//Imports from Pong example
@@ -102,6 +102,7 @@ tests/test.html
 					}
 					
 					//--- DO LOGIC ---
+					//Do something with _class.SPEED_BALL
 
 					//Render
 					_private._renderer.render(_private._renderQueue);

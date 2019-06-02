@@ -8,7 +8,7 @@
 This project when combined with design patterns adds common OOP functionality to JavaScript
 
 Goals:
-- Provide OOP like functionality including namespacing, classes, inheritance, public/private scope
+- Provide OOP like functionality including namespacing, classes, inheritance, public / private scope
 - Provide a cross-browser event model that can be added to any object
 - Provide methods for cloning and extending objects
 - Provide methods for type checking
@@ -28,7 +28,7 @@ npm test
 tests/test.html
 ```
 
-## For implementation example see *examples/pong*
+## *examples/pong* snippet:
 ``` javascript
 (function(){
 	//Imports from Pong example
@@ -116,6 +116,8 @@ tests/test.html
 })();
 ```
 
+---
+
 ## Simple class:
 ``` javascript
 OOP.namespace("foo.bar.Shape", OOP.construct({
@@ -144,12 +146,29 @@ var defaultShape = new foo.bar.Shape();
 console.log(defaultShape);
 ```
 
+### Constructor:
+``` javascript
+OOP.namespace("foo.bar.Shape", OOP.construct({
+	instance:{
+		width:100,
+		height:200,
+
+		_construct:function(){
+			console.log("This gets called when a new instance is created");
+		}
+	}
+}));
+
+var defaultShape = new foo.bar.Shape();
+console.log(defaultShape);
+```
+
 ### Add static methods and pass parameters to the instance:
 ``` javascript
 OOP.namespace("foo.bar.Shape", OOP.construct({
 	instance:{
 		width:100,
-		height:200
+		height:200,
 	},
 
 	static:{
@@ -165,6 +184,25 @@ var instance = new foo.bar.Shape({
 });
 console.log(foo.bar.Shape.getArea(instance));
 ```
+
+### Public / Private scope:
+``` javascript
+OOP.namespace("foo.bar.Shape", OOP.construct({
+	instance:function(_private, _public){
+		return {
+			width:100,
+			height:200
+			_thisIsPrivate:"some message"
+		};
+	}
+}));
+
+var defaultShape = new foo.bar.Shape();
+console.log(defaultShape);
+```
+Note that when a function is passed to "instance" a public and private scope is created. Anything starting with an underscore '_' is private. You can use the _private and _public references passed into the function to call between scopes. Optionally "this" refers to the _public or _private scope respectively. You can also use these _public and _private variables to avoid creating event delegates for "this".
+
+---
 
 ## Inheritance:
 ``` javascript
@@ -205,22 +243,7 @@ console.log(triangle._type); //"foo.bar.Triangle"
 console.log(triangle._super._type); //"foo.bar.Shape"
 ```
 
-## Public/Private scope:
-``` javascript
-OOP.namespace("foo.bar.Shape", OOP.construct({
-	instance:function(_private, _public){
-		return {
-			width:100,
-			height:200
-			_thisIsPrivate:"some message"
-		};
-	}
-}));
-
-var defaultShape = new foo.bar.Shape();
-console.log(defaultShape);
-```
-Note that when a function is passed to "instance" a public and private scope is created. Anything starting with an underscore '_' is private. You can use the _private and _public references passed into the function to call between scopes. Optionally "this" refers to the _public or _private scope respectively. You can also use these _public and _private variables to avoid creating event delegates for "this".
+---
 
 ## Events:
 ``` javascript
@@ -258,6 +281,8 @@ myObj.addEventListener("test-event", function(evt, data){
 
 myObj.dispatchEvent(new OOP.Event("test-event", 123));
 ```
+
+---
 
 ## Clone
 ``` javascript

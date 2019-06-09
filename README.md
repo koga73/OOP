@@ -156,7 +156,7 @@ OOP.namespace("foo.bar.Shape", OOP.construct({
 		width:100,
 		height:200,
 
-		_construct:function(newWidth, newHeight){
+		__construct:function(newWidth, newHeight){
 			this.width = newWidth || this.width;
 			this.height = newHeight || this.height;
 			console.log("This gets called when a new instance is created", this.width, this.height);

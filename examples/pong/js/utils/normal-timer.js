@@ -1,5 +1,8 @@
 (function(){
-	var _class = namespace("Pong.Utils.NormalTimer", construct({
+	var _class =
+	namespace("Utils.NormalTimer",
+	construct({
+
 		static:{
 			FPS:60, //Frames-per-second for interval if requestAnimationFrame doesn't exist
 		},
@@ -54,5 +57,6 @@
 				}
 			};
 		}
+		
 	}));
 })();

@@ -1,8 +1,11 @@
 (function(){
-	var MessageQueue = Pong.Utils.MessageQueue;
+	var MessageQueue = Utils.MessageQueue;
 
 	//This returns a reference to the class. We are using the word "_class" as a shortcut to easily access static members 
-	var _class = namespace("Pong.Managers.InputManager", construct({
+	var _class =
+	namespace("Pong.Managers.InputManager",
+	construct({
+
 		static:{
 			KEY_CODE_W:87,
 			KEY_CODE_S:83,
@@ -133,4 +136,5 @@
 		},
 		events:true
 	}));
+
 })();

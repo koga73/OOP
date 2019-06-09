@@ -1,15 +1,17 @@
 //Encapsulate class to not pollute window namespace
 (function(){
-	//Imports
-	//"var" can be replaced with "const" - kept as "var" for IE support
+	//Imports - "var" can be replaced with "const" - kept as "var" for IE support
 	var Models = Pong.Models;
 	var DomRenderer = Pong.Renderers.DomRenderer;
 	var InputManager = Pong.Managers.InputManager;
-	var NormalTimer = Pong.Utils.NormalTimer;
-	var MessageQueue = Pong.Utils.MessageQueue;
+	var NormalTimer = Utils.NormalTimer;
+	var MessageQueue = Utils.MessageQueue;
 	
 	//This returns a reference to the class. We are using the word "_class" as a shortcut to easily access static members
-	var _class = namespace("Pong", construct({
+	var _class =
+	namespace("Pong",
+	construct({
+
 		//Constants
 		static:{
 			ID_BOARD:"board",
@@ -200,6 +202,7 @@
 				}
 			};
 		}
+
 	}));
 	_class.getSingleton();
 })();

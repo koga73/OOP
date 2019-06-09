@@ -1,5 +1,7 @@
 (function(){
-	namespace("Pong.Renderers.DomRenderer", construct({
+	namespace("Pong.Renderers.DomRenderer",
+	construct({
+
 		instance:{
 			render:function(queue){
 				var queueLen = queue.length;
@@ -21,5 +23,6 @@
 				}
 			}
 		}
+		
 	}));
 })();

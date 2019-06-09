@@ -1,5 +1,7 @@
 (function(){
-	namespace("Pong.Models.Score", construct({
+	namespace("Pong.Models.Score",
+	construct({
+
 		instance:function(_private, _public){
 			return {
 				id:"",
@@ -31,5 +33,6 @@
 				}
 			}
 		}
+		
 	}));
 })();

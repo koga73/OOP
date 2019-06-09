@@ -231,9 +231,11 @@ describe("--- INHERITANCE ---\n", function(){
 
 	//Create namespaced class with instance and static methods
 	namespace("foo.bar.Shape", construct({
-		instance:{
-			width:100,
-			height:200
+		instance:function(_private, _public){
+			return {
+				width:100,
+				height:200
+			};
 		},
 		
 		static:{
@@ -245,8 +247,10 @@ describe("--- INHERITANCE ---\n", function(){
 	
 	//Extend class
 	namespace("foo.bar.Triangle", inherit(foo.bar.Shape, construct({
-		instance:{
-			angles:[30, 60, 90]
+		instance:function(_private, _public){
+			return {
+				angles:[30, 60, 90]
+			};
 		},
 		
 		static:{

@@ -3,7 +3,7 @@
 [![Dependencies: None](https://img.shields.io/badge/dependencies-none-lightgrey.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/koga73/OOP/blob/master/LICENSE.md)
 
-# OOP
+# OOP JS
 
 This project when combined with design patterns adds common OOP functionality to JavaScript
 
@@ -35,10 +35,13 @@ tests/test.html
 	var Models = Pong.Models;
 	var DomRenderer = Pong.Renderers.DomRenderer;
 	var InputManager = Pong.Managers.InputManager;
-	var NormalTimer = Pong.Utils.NormalTimer;
+	var NormalTimer = Utils.NormalTimer;
 	
 	//This returns a reference to the class. We are using the word "_class" as a shortcut to easily access static members
-	var _class = namespace("Foo.Bar.Pong", construct({
+	var _class =
+	namespace("Foo.Bar.Pong",
+	construct({
+	
 		//Constants
 		static:{
 			ID_BALL:"ball",
@@ -113,6 +116,7 @@ tests/test.html
 				}
 			};
 		}
+		
 	}));
 })();
 ```

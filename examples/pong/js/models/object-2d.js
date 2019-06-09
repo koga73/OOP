@@ -1,5 +1,7 @@
 (function(){
-	namespace("Pong.Models.Object2D", construct({
+	namespace("Pong.Models.Object2D",
+	construct({
+
 		instance:{
 			id:"",
 			ref:null,
@@ -42,5 +44,6 @@
 				}
 			}
 		}
+		
 	}));
 })();

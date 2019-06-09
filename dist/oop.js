@@ -1,5 +1,5 @@
 /*
-* OOP v2.2.3 Copyright (c) 2019 AJ Savino
+* OOP v2.2.4 Copyright (c) 2019 AJ Savino
 * https://github.com/koga73/OOP
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -121,13 +121,13 @@ var OOP = function(){
 
 				if (isClosure){
 					//Extend super to instance
-					_instance = _methods.extend(_instance, false, _super);
+					_instance = _methods.extend({}, false, _super, true, _instance);
 					//Extend public members to new object (public does not start with '_') and apply args
 					_public = _methods.extend.apply(this, [_public, false, /^[^_]/, _instance].concat(objArgs));
 					//Extend private members to new object (public starts with '_')
 					_private = _methods.extend(_private, false, /^_/, _instance);
 				} else {
-					_public = _methods.extend.apply(this, [_public, false, _super, true, _instance].concat(objArgs));
+					_public = _methods.extend.apply(this, [_public, false, _super, true, _instance, false].concat(objArgs));
 				}
 
 				if (!simple){
@@ -205,10 +205,16 @@ var OOP = function(){
 				case (_methods.isObject(obj)):
 					var clone = {};
 					for (var prop in obj){
+						var val = obj[prop];
 						if (deep){
-							clone[prop] = _methods.clone(obj[prop], deep);
+							//Prevent exceed call stack
+							if (val !== obj){
+								clone[prop] = _methods.clone(val, deep);
+							} else {
+								clone[prop] = val;
+							}
 						} else {
-							clone[prop] = obj[prop];
+							clone[prop] = val;
 						}
 					}
 					return clone;

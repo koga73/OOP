@@ -254,7 +254,11 @@
 				instance:function(){
 					return {
 						width:100,
-						height:200
+						height:200,
+
+						test:function(){
+							return 10;
+						}
 					};
 				},
 				
@@ -269,7 +273,11 @@
 			OOP.namespace("foo.bar.Triangle", OOP.inherit(foo.bar.Shape, OOP.construct({
 				instance:function(){
 					return {
-						angles:[30, 60, 90]
+						angles:[30, 60, 90],
+
+						test:function(){
+							return this._super.test() + 10;
+						}
 					};
 				},
 				
@@ -301,6 +309,9 @@
 				console.assert(triangle.height == triangle._super.height, "should create an inherited foo.bar.Triangle class");
 				console.assert(triangleArea == 30000, "should create an inherited foo.bar.Triangle class");
 				console.assert(shapeAreaDefault == 60000, "should create an inherited foo.bar.Triangle class");
+
+				console.assert(triangle._super.test() == 10, "should create an inherited foo.bar.Triangle class");
+				console.assert(triangle.test() == 20, "should create an inherited foo.bar.Triangle class");
 		</script>
 
 		<!-- EVENTS -->

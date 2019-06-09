@@ -234,7 +234,11 @@ describe("--- INHERITANCE ---\n", function(){
 		instance:function(_private, _public){
 			return {
 				width:100,
-				height:200
+				height:200,
+
+				test:function(){
+					return 10;
+				}
 			};
 		},
 		
@@ -249,7 +253,11 @@ describe("--- INHERITANCE ---\n", function(){
 	namespace("foo.bar.Triangle", inherit(foo.bar.Shape, construct({
 		instance:function(_private, _public){
 			return {
-				angles:[30, 60, 90]
+				angles:[30, 60, 90],
+
+				test:function(){
+					return this._super.test() + 10;
+				}
 			};
 		},
 		
@@ -281,6 +289,9 @@ describe("--- INHERITANCE ---\n", function(){
 		expect(triangle.height).equal(triangle._super.height);
 		expect(triangleArea).equal(30000);
 		expect(shapeAreaDefault).equal(60000);
+
+		expect(triangle._super.test()).equal(10);
+		expect(triangle.test()).equal(20);
 	});
 });
 

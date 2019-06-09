@@ -1,5 +1,5 @@
 /*
-* OOP v2.2.1 Copyright (c) 2019 AJ Savino
+* OOP v2.2.2 Copyright (c) 2019 AJ Savino
 * https://github.com/koga73/OOP
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -155,7 +155,7 @@ var OOP = function(){
 				return _public;
 			};
 			if (static) {
-				_methods.extend(_class, static);
+				_methods.extend(_class, false, static);
 				if (staticEvents){
 					_methods.addEvents(_class);
 				}
